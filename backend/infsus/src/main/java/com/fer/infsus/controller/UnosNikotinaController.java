@@ -1,9 +1,15 @@
 package com.fer.infsus.controller;
 
+import com.fer.infsus.dto.BatchUnosNikotinaDTO;
 import com.fer.infsus.dto.UnosNikotinaDTO;
+import com.fer.infsus.model.Korisnik;
+import com.fer.infsus.model.Proizvod;
 import com.fer.infsus.model.UnosNikotina;
+import com.fer.infsus.repository.KorisnikRepository;
+import com.fer.infsus.repository.ProizvodRepository;
 import com.fer.infsus.service.UnosNikotinaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +22,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UnosNikotinaController {
     private final UnosNikotinaService unosNikotinaService;
+
+    @Autowired
+    private KorisnikRepository korisnikRepository;
+    @Autowired
+    private ProizvodRepository proizvodRepository;
 
     @GetMapping
     public List<UnosNikotinaDTO> sviUnosiNikotina() {
@@ -54,6 +65,20 @@ public class UnosNikotinaController {
                 .stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    @PostMapping("/batch")
+    public List<UnosNikotinaDTO> batchUnosNikotina(@RequestBody BatchUnosNikotinaDTO batchDto) {
+        Korisnik korisnik = korisnikRepository.findById(batchDto.getIdKorisnik()).orElseThrow();
+        return batchDto.getProizvodi().stream().map(p -> {
+            Proizvod proizvod = proizvodRepository.findById(p.getIdProizvod()).orElseThrow();
+            UnosNikotina unos = new UnosNikotina();
+            unos.setKolicina(p.getKolicina());
+            unos.setDatum(batchDto.getDatum().atStartOfDay());
+            unos.setKorisnik(korisnik);
+            unos.setProizvod(proizvod);
+            return toDTO(unosNikotinaService.spremiUnosNikotina(unos));
+        }).collect(Collectors.toList());
+    }
+
     private UnosNikotinaDTO toDTO(UnosNikotina u) {
         UnosNikotinaDTO dto = new UnosNikotinaDTO();
         dto.setIdUnosNikotina(u.getIdUnosNikotina());
@@ -62,11 +87,17 @@ public class UnosNikotinaController {
         dto.setIdProizvod(u.getProizvod() != null ? u.getProizvod().getIdProizvod() : null);
         return dto;
     }
+
     private UnosNikotina fromDTO(UnosNikotinaDTO dto) {
         UnosNikotina u = new UnosNikotina();
         u.setIdUnosNikotina(dto.getIdUnosNikotina());
         u.setKolicina(dto.getKolicina());
-        // Korisnik i Proizvod bi se trebali dohvatiti iz baze po id-u, ovo je pojednostavljeno
+        if (dto.getIdKorisnik() != null) {
+            u.setKorisnik(korisnikRepository.findById(dto.getIdKorisnik()).orElse(null));
+        }
+        if (dto.getIdProizvod() != null) {
+            u.setProizvod(proizvodRepository.findById(dto.getIdProizvod()).orElse(null));
+        }
         return u;
     }
 }

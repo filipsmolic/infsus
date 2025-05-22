@@ -13,6 +13,7 @@ import lombok.Setter;
 public class Ostvario {
     @Id
     @Column(name = "IdKorisnik")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idKorisnik;
     @Id
     @Column(name = "IdPostignuce")

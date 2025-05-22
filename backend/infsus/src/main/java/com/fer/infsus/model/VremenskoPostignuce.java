@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class VremenskoPostignuce {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idPostignuce;
     private Integer brojDanaUvjet;
 
