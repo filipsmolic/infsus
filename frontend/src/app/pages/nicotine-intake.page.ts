@@ -5,6 +5,8 @@ import { ProizvodControllerService } from '../api';
 import { UnosNikotinaControllerService } from '../api';
 import { ProizvodDTO } from '../api/model/proizvodDTO';
 import { UnosNikotinaDTO } from '../api/model/unosNikotinaDTO';
+import { BatchUnosNikotinaDTO } from '../api/model/batchUnosNikotinaDTO';
+import { ProizvodUnosDTO } from '../api/model/proizvodUnosDTO';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -105,6 +107,15 @@ import { BehaviorSubject } from 'rxjs';
             Spremi unos
           </button>
         </div>
+        <div class="flex justify-center mt-4">
+          @if (isSaved) {
+          <small class="text-green-400"> Unos uspješno spremljen! </small>
+          } @else if (isError) {
+          <small class="text-red-400">
+            Pogreška prilikom spremanja unosa!
+          </small>
+          }
+        </div>
       </form>
     </div>
   `,
@@ -119,6 +130,9 @@ export class NicotineIntakePageComponent {
   >([{ productId: undefined, quantity: 0 }]);
   totalQuantity = 0;
   productsList: ProizvodDTO[] = [];
+
+  public isSaved = false;
+  public isError = false;
 
   ngOnInit(): void {
     this.fetchProducts();
@@ -183,21 +197,29 @@ export class NicotineIntakePageComponent {
   }
 
   submit() {
-    const unosList = this.products.map((entry) => {
+    this.isSaved = false;
+    this.isError = false;
+    const proizvodi: ProizvodUnosDTO[] = this.products.map((entry) => {
       return {
-        datum: this.date,
-        kolicina: entry.quantity,
         idProizvod: entry.productId,
+        kolicina: entry.quantity,
       };
     });
-    unosList.forEach((unos) => {
-      this.unosNikotinaService.dodajUnosNikotina(unos).subscribe({
-        next: () => {},
-        error: (err) => {
-          console.error('Error saving nicotine intake', err);
-        },
-      });
+    const batch: BatchUnosNikotinaDTO = {
+      idKorisnik: 1,
+      datum: this.date,
+      proizvodi: proizvodi,
+    };
+    console.log('Batch to save:', batch);
+    this.unosNikotinaService.batchUnosNikotina(batch).subscribe({
+      next: () => {
+        this.products = [{ productId: undefined, quantity: 0 }];
+        this.date = new Date().toISOString().substring(0, 10);
+        this.isSaved = true;
+      },
+      error: (err) => {
+        this.isError = true;
+      },
     });
-    alert('Unos spremljen!');
   }
 }

@@ -17,12 +17,14 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/batchUnosNikotinaDTO.ts
 model/korisnikDTO.ts
 model/models.ts
 model/ostvarioDTO.ts
 model/postignuceDTO.ts
 model/postotnoPostignuceDTO.ts
 model/proizvodDTO.ts
+model/proizvodUnosDTO.ts
 model/savjetDTO.ts
 model/tipProizvodaDTO.ts
 model/unosKupnjeDTO.ts

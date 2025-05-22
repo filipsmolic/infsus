@@ -17,6 +17,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { BatchUnosNikotinaDTO } from '../model/batchUnosNikotinaDTO';
+// @ts-ignore
 import { UnosNikotinaDTO } from '../model/unosNikotinaDTO';
 
 // @ts-ignore
@@ -92,6 +94,69 @@ export class UnosNikotinaControllerService extends BaseService {
             {
                 context: localVarHttpContext,
                 body: unosNikotinaDTO,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param batchUnosNikotinaDTO 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public batchUnosNikotina(batchUnosNikotinaDTO: BatchUnosNikotinaDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<UnosNikotinaDTO>>;
+    public batchUnosNikotina(batchUnosNikotinaDTO: BatchUnosNikotinaDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UnosNikotinaDTO>>>;
+    public batchUnosNikotina(batchUnosNikotinaDTO: BatchUnosNikotinaDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UnosNikotinaDTO>>>;
+    public batchUnosNikotina(batchUnosNikotinaDTO: BatchUnosNikotinaDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (batchUnosNikotinaDTO === null || batchUnosNikotinaDTO === undefined) {
+            throw new Error('Required parameter batchUnosNikotinaDTO was null or undefined when calling batchUnosNikotina.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            '*/*'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/unosi-nikotina/batch`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<Array<UnosNikotinaDTO>>('post', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: batchUnosNikotinaDTO,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
