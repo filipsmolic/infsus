@@ -1,5 +1,24 @@
 package com.fer.infsus.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.fer.infsus.dto.BatchUnosNikotinaDTO;
 import com.fer.infsus.dto.UnosNikotinaDTO;
 import com.fer.infsus.dto.UnosiZaKorisnikaURasponuDTO;
@@ -10,12 +29,6 @@ import com.fer.infsus.model.UnosNikotina;
 import com.fer.infsus.repository.KorisnikRepository;
 import com.fer.infsus.repository.ProizvodRepository;
 import com.fer.infsus.service.UnosNikotinaService;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/unosi-nikotina")
@@ -65,12 +78,17 @@ public class UnosNikotinaController {
     }
 
     @GetMapping("/korisnik/{idKorisnik}")
-    public List<UnosiZaKorisnikaURasponuDTO> unosiZaKorisnikaURasponu(
+    public Page<UnosiZaKorisnikaURasponuDTO> unosiZaKorisnikaURasponu(
             @PathVariable Integer idKorisnik,
             @RequestParam("od") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime od,
-            @RequestParam("do") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime doVremena) {
-        return unosNikotinaService.unosiZaKorisnikaURasponu(idKorisnik, od, doVremena)
-                .stream().map(unosNikotinaMapper::toUnosiZaKorisnikaURasponuDTO).collect(Collectors.toList());
+            @RequestParam("do") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime doVremena,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datum"));
+        
+        return unosNikotinaService.unosiZaKorisnikaURasponu(idKorisnik, od, doVremena, pageable)
+                .map(unosNikotinaMapper::toUnosiZaKorisnikaURasponuDTO);
     }
 
     @PostMapping("/batch")
