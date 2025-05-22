@@ -1,8 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TipProizvodaControllerService } from '../api';
-import { TipProizvodaDTO } from '../api/model/tipProizvodaDTO';
+import { ProizvodControllerService } from '../api';
+import { UnosNikotinaControllerService } from '../api';
+import { ProizvodDTO } from '../api/model/proizvodDTO';
+import { UnosNikotinaDTO } from '../api/model/unosNikotinaDTO';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -49,15 +52,17 @@ import { TipProizvodaDTO } from '../api/model/tipProizvodaDTO';
               <label class="block mb-1 text-gray-300">Proizvod</label>
               <select
                 class="w-full p-3 rounded bg-gray-700 text-white"
-                [(ngModel)]="entry.product"
+                [ngModel]="entry.productId"
                 [name]="'product' + i"
                 required
+                (change)="onProductChange(i, $event)"
               >
-                <option value="" disabled selected>
-                  Odaberi tip proizvoda
-                </option>
-                <option *ngFor="let tip of productTypes" [value]="tip.naziv">
-                  {{ tip.naziv }}
+                <option value="" disabled selected>Odaberi proizvod</option>
+                <option
+                  *ngFor="let proizvod of productsList"
+                  [value]="proizvod.idProizvod"
+                >
+                  {{ proizvod.opis }}
                 </option>
               </select>
             </div>
@@ -66,10 +71,10 @@ import { TipProizvodaDTO } from '../api/model/tipProizvodaDTO';
               <input
                 type="number"
                 class="w-full p-3 rounded bg-gray-700 text-white"
-                [(ngModel)]="entry.quantity"
+                [ngModel]="entry.quantity"
                 [name]="'quantity' + i"
                 min="1"
-                (input)="updateTotal()"
+                (input)="onQuantityChange(i, $event)"
                 required
               />
             </div>
@@ -105,48 +110,94 @@ import { TipProizvodaDTO } from '../api/model/tipProizvodaDTO';
   `,
 })
 export class NicotineIntakePageComponent {
-  private productService = inject(TipProizvodaControllerService);
+  private proizvodService = inject(ProizvodControllerService);
+  private unosNikotinaService = inject(UnosNikotinaControllerService);
 
   date: string = new Date().toISOString().substring(0, 10);
-  products = [{ product: '', quantity: 0 }];
+  products$ = new BehaviorSubject<
+    { productId: number | undefined; quantity: number }[]
+  >([{ productId: undefined, quantity: 0 }]);
   totalQuantity = 0;
-
-  productTypes: TipProizvodaDTO[] = [];
+  productsList: ProizvodDTO[] = [];
 
   ngOnInit(): void {
-    this.fetchProductTypes();
-  }
-
-  fetchProductTypes(): void {
-    this.productService.sviTipovi().subscribe({
-      next: (data) => {
-        this.productTypes = data;
-        console.log('Fetched product types:', data);
-      },
-      error: (err) => {
-        console.error('Error fetching product types', err);
-      },
+    this.fetchProducts();
+    this.products$.subscribe((products) => {
+      this.totalQuantity = products.reduce((sum, p) => {
+        const prod = this.productsList.find(
+          (pr) => pr.idProizvod === p.productId
+        );
+        return (
+          sum +
+          (prod
+            ? Number(p.quantity || 0) * Number(prod.nikotinSadrzaj || 0)
+            : 0)
+        );
+      }, 0);
     });
   }
 
+  get products() {
+    return this.products$.value;
+  }
+
+  set products(val) {
+    this.products$.next(val);
+  }
+
+  fetchProducts(): void {
+    this.proizvodService
+      .sviProizvodi('body', false, { httpHeaderAccept: 'application/json' })
+      .subscribe({
+        next: (data) => {
+          this.productsList = data;
+        },
+        error: (err) => {
+          console.error('Error fetching products', err);
+        },
+      });
+  }
+
   addProduct() {
-    this.products.push({ product: '', quantity: 0 });
+    this.products = [...this.products, { productId: undefined, quantity: 0 }];
   }
 
   removeProduct(i: number) {
-    this.products.splice(i, 1);
-    this.updateTotal();
+    const updated = [...this.products];
+    updated.splice(i, 1);
+    this.products = updated;
   }
 
-  updateTotal() {
-    this.totalQuantity = this.products.reduce(
-      (sum, p) => sum + Number(p.quantity || 0),
-      0
-    );
+  onProductChange(i: number, event: Event) {
+    const value = Number((event.target as HTMLSelectElement).value);
+    const updated = [...this.products];
+    updated[i].productId = value;
+    this.products = updated;
+  }
+
+  onQuantityChange(i: number, event: Event) {
+    const value = Number((event.target as HTMLInputElement).value);
+    const updated = [...this.products];
+    updated[i].quantity = value;
+    this.products = updated;
   }
 
   submit() {
-    // Handle form submission
+    const unosList = this.products.map((entry) => {
+      return {
+        datum: this.date,
+        kolicina: entry.quantity,
+        idProizvod: entry.productId,
+      };
+    });
+    unosList.forEach((unos) => {
+      this.unosNikotinaService.dodajUnosNikotina(unos).subscribe({
+        next: () => {},
+        error: (err) => {
+          console.error('Error saving nicotine intake', err);
+        },
+      });
+    });
     alert('Unos spremljen!');
   }
 }
