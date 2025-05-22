@@ -1,6 +1,7 @@
 package com.fer.infsus.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fer.infsus.config.TestSecurityConfig;
 import com.fer.infsus.dto.BatchUnosNikotinaDTO;
 import com.fer.infsus.dto.UnosNikotinaDTO;
 import com.fer.infsus.dto.UnosiZaKorisnikaURasponuDTO;
@@ -8,15 +9,18 @@ import com.fer.infsus.mapper.UnosNikotinaMapper;
 import com.fer.infsus.model.Korisnik;
 import com.fer.infsus.model.Proizvod;
 import com.fer.infsus.model.UnosNikotina;
-import com.fer.infsus.service.UnosNikotinaService;
 import com.fer.infsus.repository.KorisnikRepository;
 import com.fer.infsus.repository.ProizvodRepository;
+import com.fer.infsus.service.UnosNikotinaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -29,13 +33,12 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UnosNikotinaController.class)
-@AutoConfigureMockMvc(addFilters = false)
+@Import(TestSecurityConfig.class)
 public class UnosNikotinaControllerTest {
 
     @Autowired
@@ -56,10 +59,10 @@ public class UnosNikotinaControllerTest {
     @MockBean
     private UnosNikotinaMapper unosNikotinaMapper;
 
-    private UnosNikotina u1;
-    private UnosNikotina u2;
-    private UnosNikotinaDTO u1DTO;
-    private UnosNikotinaDTO u2DTO;
+    private UnosNikotina unosNikotina1;
+    private UnosNikotina unosNikotina2;
+    private UnosNikotinaDTO unosNikotinaDTO1;
+    private UnosNikotinaDTO unosNikotinaDTO2;
     private UnosiZaKorisnikaURasponuDTO unosiZaKorisnikaURasponuDTO;
     private Korisnik korisnik;
     private Proizvod proizvod;
@@ -76,128 +79,233 @@ public class UnosNikotinaControllerTest {
         proizvod.setOpis("Test Proizvod");
         proizvod.setNikotinSadrzaj(5.0);
 
-        u1 = new UnosNikotina();
-        u1.setIdUnosNikotina(10);
-        u1.setKolicina(5);
-        u1.setDatum(LocalDateTime.of(2025,5,1,12,0));
-        u1.setKorisnik(korisnik);
-        u1.setProizvod(proizvod);
+        unosNikotina1 = new UnosNikotina();
+        unosNikotina1.setIdUnosNikotina(10);
+        unosNikotina1.setKolicina(5);
+        unosNikotina1.setDatum(LocalDateTime.of(2025, 5, 1, 12, 0));
+        unosNikotina1.setKorisnik(korisnik);
+        unosNikotina1.setProizvod(proizvod);
 
-        u2 = new UnosNikotina();
-        u2.setIdUnosNikotina(11);
-        u2.setKolicina(7);
-        u2.setDatum(LocalDateTime.of(2025,5,2,12,0));
-        u2.setKorisnik(korisnik);
-        u2.setProizvod(proizvod);
+        unosNikotina2 = new UnosNikotina();
+        unosNikotina2.setIdUnosNikotina(11);
+        unosNikotina2.setKolicina(7);
+        unosNikotina2.setDatum(LocalDateTime.of(2025, 5, 2, 12, 0));
+        unosNikotina2.setKorisnik(korisnik);
+        unosNikotina2.setProizvod(proizvod);
 
-        u1DTO = new UnosNikotinaDTO();
-        u1DTO.setIdUnosNikotina(10);
-        u1DTO.setKolicina(5);
-        u1DTO.setIdKorisnik(1);
-        u1DTO.setIdProizvod(2);
+        unosNikotinaDTO1 = new UnosNikotinaDTO();
+        unosNikotinaDTO1.setIdUnosNikotina(10);
+        unosNikotinaDTO1.setKolicina(5);
+        unosNikotinaDTO1.setIdKorisnik(1);
+        unosNikotinaDTO1.setIdProizvod(2);
+        unosNikotinaDTO1.setDatum(LocalDateTime.of(2025, 5, 1, 12, 0));
 
-        u2DTO = new UnosNikotinaDTO();
-        u2DTO.setIdUnosNikotina(11);
-        u2DTO.setKolicina(7);
-        u2DTO.setIdKorisnik(1);
-        u2DTO.setIdProizvod(2);
+        unosNikotinaDTO2 = new UnosNikotinaDTO();
+        unosNikotinaDTO2.setIdUnosNikotina(11);
+        unosNikotinaDTO2.setKolicina(7);
+        unosNikotinaDTO2.setIdKorisnik(1);
+        unosNikotinaDTO2.setIdProizvod(2);
+        unosNikotinaDTO2.setDatum(LocalDateTime.of(2025, 5, 2, 12, 0));
 
         unosiZaKorisnikaURasponuDTO = new UnosiZaKorisnikaURasponuDTO();
         unosiZaKorisnikaURasponuDTO.setIdUnosNikotina(10);
         unosiZaKorisnikaURasponuDTO.setKolicina(5);
         unosiZaKorisnikaURasponuDTO.setIdKorisnik(1);
         unosiZaKorisnikaURasponuDTO.setIdProizvod(2);
-        unosiZaKorisnikaURasponuDTO.setDatum(LocalDateTime.of(2025,5,1,12,0));
+        unosiZaKorisnikaURasponuDTO.setDatum(LocalDateTime.of(2025, 5, 1, 12, 0));
         unosiZaKorisnikaURasponuDTO.setOpisProizvoda("Test Proizvod");
 
-        given(korisnikRepository.findById(1)).willReturn(Optional.of(korisnik));
-        given(proizvodRepository.findById(2)).willReturn(Optional.of(proizvod));
+        when(korisnikRepository.findById(1)).thenReturn(Optional.of(korisnik));
+        when(proizvodRepository.findById(2)).thenReturn(Optional.of(proizvod));
+        
+        // Set up mapper for entity-to-dto conversion
+        when(unosNikotinaMapper.toDTO(unosNikotina1)).thenReturn(unosNikotinaDTO1);
+        when(unosNikotinaMapper.toDTO(unosNikotina2)).thenReturn(unosNikotinaDTO2);
+        when(unosNikotinaMapper.toUnosiZaKorisnikaURasponuDTO(unosNikotina1)).thenReturn(unosiZaKorisnikaURasponuDTO);
     }
 
     @Test
-    void testGetAll() throws Exception {
-        List<UnosNikotina> lista = Arrays.asList(u1, u2);
-        given(unosNikotinaService.sviUnosiNikotina()).willReturn(lista);
+    void sviUnosiNikotina_ReturnsAllUnosNikotinaDTOs() throws Exception {
+        // Arrange
+        when(unosNikotinaService.sviUnosiNikotina()).thenReturn(Arrays.asList(unosNikotina1, unosNikotina2));
 
+        // Act & Assert
         mockMvc.perform(get("/api/unosi-nikotina"))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$[0].idUnosNikotina").value(10))
-               .andExpect(jsonPath("$[1].kolicina").value(7));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].idUnosNikotina", is(10)))
+                .andExpect(jsonPath("$[0].kolicina", is(5)))
+                .andExpect(jsonPath("$[1].idUnosNikotina", is(11)))
+                .andExpect(jsonPath("$[1].kolicina", is(7)));
+
+        verify(unosNikotinaService).sviUnosiNikotina();
+        verify(unosNikotinaMapper).toDTO(unosNikotina1);
+        verify(unosNikotinaMapper).toDTO(unosNikotina2);
     }
 
     @Test
-    void testGetById() throws Exception {
-        given(unosNikotinaService.unosNikotinaPoId(10)).willReturn(Optional.of(u1));
+    void unosNikotinaPoId_ExistingId_ReturnsUnosNikotinaDTO() throws Exception {
+        // Arrange
+        when(unosNikotinaService.unosNikotinaPoId(10)).thenReturn(Optional.of(unosNikotina1));
 
+        // Act & Assert
         mockMvc.perform(get("/api/unosi-nikotina/10"))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$.idUnosNikotina").value(10))
-               .andExpect(jsonPath("$.idKorisnik").value(1));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idUnosNikotina", is(10)))
+                .andExpect(jsonPath("$.kolicina", is(5)))
+                .andExpect(jsonPath("$.datum").exists());
+
+        verify(unosNikotinaService).unosNikotinaPoId(10);
+        verify(unosNikotinaMapper).toDTO(unosNikotina1);
     }
 
     @Test
-    void testCreate() throws Exception {
-        UnosNikotinaDTO dto = new UnosNikotinaDTO();
-        dto.setKolicina(15);
-        dto.setIdKorisnik(1);
-        dto.setIdProizvod(2);
+    void dodajUnosNikotina_ValidDTO_ReturnsSavedDTO() throws Exception {
+        // Arrange
+        LocalDateTime testDatum = LocalDateTime.of(2025, 6, 15, 14, 30);
+        
+        UnosNikotinaDTO inputDto = new UnosNikotinaDTO();
+        inputDto.setKolicina(15);
+        inputDto.setIdKorisnik(1);
+        inputDto.setIdProizvod(2);
+        inputDto.setDatum(testDatum);
 
-        UnosNikotina saved = new UnosNikotina();
-        saved.setIdUnosNikotina(20);
-        saved.setKolicina(15);
-        given(unosNikotinaService.spremiUnosNikotina(any(UnosNikotina.class))).willReturn(saved);
+        UnosNikotina entityToSave = new UnosNikotina();
+        entityToSave.setKolicina(15);
+        entityToSave.setKorisnik(korisnik);
+        entityToSave.setProizvod(proizvod);
+        entityToSave.setDatum(testDatum);
 
+        UnosNikotina savedEntity = new UnosNikotina();
+        savedEntity.setIdUnosNikotina(20);
+        savedEntity.setKolicina(15);
+        savedEntity.setKorisnik(korisnik);
+        savedEntity.setProizvod(proizvod);
+        savedEntity.setDatum(testDatum);
+
+        UnosNikotinaDTO savedDto = new UnosNikotinaDTO();
+        savedDto.setIdUnosNikotina(20);
+        savedDto.setKolicina(15);
+        savedDto.setIdKorisnik(1);
+        savedDto.setIdProizvod(2);
+        savedDto.setDatum(testDatum);
+
+        when(unosNikotinaMapper.fromDTO(inputDto)).thenReturn(entityToSave);
+        when(unosNikotinaService.spremiUnosNikotina(entityToSave)).thenReturn(savedEntity);
+        when(unosNikotinaMapper.toDTO(savedEntity)).thenReturn(savedDto);
+
+        // Act & Assert
         mockMvc.perform(post("/api/unosi-nikotina")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$.idUnosNikotina").value(20))
-               .andExpect(jsonPath("$.kolicina").value(15));
+                .content(objectMapper.writeValueAsString(inputDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idUnosNikotina", is(20)))
+                .andExpect(jsonPath("$.kolicina", is(15)))
+                .andExpect(jsonPath("$.datum").exists());
+
+        verify(unosNikotinaMapper).fromDTO(any(UnosNikotinaDTO.class));
+        verify(unosNikotinaService).spremiUnosNikotina(any(UnosNikotina.class));
+        verify(unosNikotinaMapper).toDTO(any(UnosNikotina.class));
     }
 
     @Test
-    void testUpdate() throws Exception {
-        UnosNikotinaDTO dto = new UnosNikotinaDTO();
-        dto.setKolicina(25);
-        dto.setIdKorisnik(1);
-        dto.setIdProizvod(2);
+    void azurirajUnosNikotina_ValidDTO_ReturnsUpdatedDTO() throws Exception {
+        // Arrange
+        LocalDateTime testDatum = LocalDateTime.of(2025, 6, 15, 14, 30);
+        
+        UnosNikotinaDTO inputDto = new UnosNikotinaDTO();
+        inputDto.setKolicina(25);
+        inputDto.setIdKorisnik(1);
+        inputDto.setIdProizvod(2);
+        inputDto.setDatum(testDatum);
 
-        UnosNikotina updated = new UnosNikotina();
-        updated.setIdUnosNikotina(10);
-        updated.setKolicina(25);
-        given(unosNikotinaService.spremiUnosNikotina(any(UnosNikotina.class))).willReturn(updated);
+        UnosNikotina entityToUpdate = new UnosNikotina();
+        entityToUpdate.setKolicina(25);
+        entityToUpdate.setKorisnik(korisnik);
+        entityToUpdate.setProizvod(proizvod);
+        entityToUpdate.setDatum(testDatum);
 
+        UnosNikotina updatedEntity = new UnosNikotina();
+        updatedEntity.setIdUnosNikotina(10);
+        updatedEntity.setKolicina(25);
+        updatedEntity.setKorisnik(korisnik);
+        updatedEntity.setProizvod(proizvod);
+        updatedEntity.setDatum(testDatum);
+
+        UnosNikotinaDTO updatedDto = new UnosNikotinaDTO();
+        updatedDto.setIdUnosNikotina(10);
+        updatedDto.setKolicina(25);
+        updatedDto.setIdKorisnik(1);
+        updatedDto.setIdProizvod(2);
+        updatedDto.setDatum(testDatum);
+
+        when(unosNikotinaMapper.fromDTO(inputDto)).thenReturn(entityToUpdate);
+        when(unosNikotinaService.spremiUnosNikotina(any(UnosNikotina.class))).thenReturn(updatedEntity);
+        when(unosNikotinaMapper.toDTO(updatedEntity)).thenReturn(updatedDto);
+
+        // Act & Assert
         mockMvc.perform(put("/api/unosi-nikotina/10")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$.kolicina").value(25));
+                .content(objectMapper.writeValueAsString(inputDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idUnosNikotina", is(10)))
+                .andExpect(jsonPath("$.kolicina", is(25)))
+                .andExpect(jsonPath("$.datum").exists());
+
+        verify(unosNikotinaMapper).fromDTO(any(UnosNikotinaDTO.class));
+        verify(unosNikotinaService).spremiUnosNikotina(any(UnosNikotina.class));
+        verify(unosNikotinaMapper).toDTO(any(UnosNikotina.class));
     }
 
     @Test
-    void testDelete() throws Exception {
+    void obrisiUnosNikotina_ExistingId_NoContent() throws Exception {
+        // Arrange
         doNothing().when(unosNikotinaService).obrisiUnosNikotina(10);
 
+        // Act & Assert
         mockMvc.perform(delete("/api/unosi-nikotina/10"))
-               .andExpect(status().isOk());
+                .andExpect(status().isOk());
+
+        verify(unosNikotinaService).obrisiUnosNikotina(10);
     }
 
     @Test
-    void testGetByKorisnikInRange() throws Exception {
-        List<UnosNikotina> lista = Arrays.asList(u1);
-        given(unosNikotinaService
-            .unosiZaKorisnikaURasponu(eq(1), any(LocalDateTime.class), any(LocalDateTime.class)))
-        .willReturn(lista);
+    void unosiZaKorisnikaURasponu_ValidParams_ReturnsFilteredDTOs() throws Exception {
+        // Arrange
+        LocalDateTime od = LocalDateTime.of(2025, 5, 1, 0, 0, 0);
+        LocalDateTime doVreme = LocalDateTime.of(2025, 5, 5, 0, 0, 0);
+        
+        Page<UnosNikotina> page = new PageImpl<>(List.of(unosNikotina1));
+        
+        when(unosNikotinaService.unosiZaKorisnikaURasponu(
+                eq(1), 
+                any(LocalDateTime.class), 
+                any(LocalDateTime.class),
+                any(Pageable.class)))
+                .thenReturn(page);
 
+        // Act & Assert
         mockMvc.perform(get("/api/unosi-nikotina/korisnik/1")
-                .param("od","2025-05-01T00:00:00")
-                .param("do","2025-05-05T00:00:00"))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$[0].idUnosNikotina").value(10));
+                .param("od", "2025-05-01T00:00:00")
+                .param("do", "2025-05-05T00:00:00")
+                .param("page", "0")
+                .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].idUnosNikotina", is(10)))
+                .andExpect(jsonPath("$.content[0].kolicina", is(5)));
+
+        verify(unosNikotinaService).unosiZaKorisnikaURasponu(
+                eq(1), 
+                any(LocalDateTime.class), 
+                any(LocalDateTime.class),
+                any(Pageable.class));
+        verify(unosNikotinaMapper).toUnosiZaKorisnikaURasponuDTO(unosNikotina1);
     }
 
     @Test
-    void testBatchUnosNikotina() throws Exception {
+    void batchUnosNikotina_ValidBatchDTO_ReturnsSavedDTOs() throws Exception {
+        // Arrange
         BatchUnosNikotinaDTO.ProizvodUnosDTO proizvodDTO = new BatchUnosNikotinaDTO.ProizvodUnosDTO();
         proizvodDTO.setIdProizvod(2);
         proizvodDTO.setKolicina(5);
@@ -207,39 +315,24 @@ public class UnosNikotinaControllerTest {
         batchDTO.setDatum(LocalDate.of(2025, 5, 1));
         batchDTO.setProizvodi(List.of(proizvodDTO));
 
-        UnosNikotina u1 = new UnosNikotina();
-        u1.setIdUnosNikotina(10);
-        u1.setKolicina(5);
-        UnosNikotina u2 = new UnosNikotina();
-        u2.setIdUnosNikotina(11);
-        u2.setKolicina(10);
-
-        given(unosNikotinaService.spremiUnosNikotina(any())).willReturn(u1, u2);
-
-        mockMvc.perform(post("/api/unosi-nikotina/batch")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(batchDTO)))
-               .andExpect(status().isOk())
-               .andExpect(jsonPath("$[0].idUnosNikotina").value(10))
-               .andExpect(jsonPath("$[1].idUnosNikotina").value(11));
-    }
-
-    @Test
-    void batchUnosNikotina_ValidBatchDTO_ReturnsListOfSavedDTOs() throws Exception {
-        // Arrange
-        BatchUnosNikotinaDTO.ProizvodUnosDTO proizvodDTO = new BatchUnosNikotinaDTO.ProizvodUnosDTO();
-        proizvodDTO.setIdProizvod(1);
-        proizvodDTO.setKolicina(2);
+        UnosNikotina savedEntity = new UnosNikotina();
+        savedEntity.setIdUnosNikotina(10);
+        savedEntity.setKolicina(5);
+        savedEntity.setDatum(LocalDateTime.of(2025, 5, 1, 0, 0));
+        savedEntity.setKorisnik(korisnik);
+        savedEntity.setProizvod(proizvod);
         
-        BatchUnosNikotinaDTO batchDTO = new BatchUnosNikotinaDTO();
-        batchDTO.setIdKorisnik(1);
-        batchDTO.setDatum(LocalDate.now());
-        batchDTO.setProizvodi(List.of(proizvodDTO));
+        UnosNikotinaDTO savedEntityDTO = new UnosNikotinaDTO();
+        savedEntityDTO.setIdUnosNikotina(10);
+        savedEntityDTO.setKolicina(5);
+        savedEntityDTO.setIdKorisnik(1);
+        savedEntityDTO.setIdProizvod(2);
+
+        // Mock service to return our saved entity
+        when(unosNikotinaService.spremiUnosNikotina(any(UnosNikotina.class))).thenReturn(savedEntity);
         
-        when(korisnikRepository.findById(1)).thenReturn(Optional.of(korisnik));
-        when(proizvodRepository.findById(1)).thenReturn(Optional.of(proizvod));
-        when(unosNikotinaService.spremiUnosNikotina(any(UnosNikotina.class))).thenReturn(u1);
-        when(unosNikotinaMapper.toDTO(any(UnosNikotina.class))).thenReturn(u1DTO);
+        // Mock mapper to return our DTO for the saved entity
+        when(unosNikotinaMapper.toDTO(savedEntity)).thenReturn(savedEntityDTO);
 
         // Act & Assert
         mockMvc.perform(post("/api/unosi-nikotina/batch")
@@ -249,9 +342,10 @@ public class UnosNikotinaControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].idUnosNikotina", is(10)))
                 .andExpect(jsonPath("$[0].kolicina", is(5)));
-        
+
         verify(korisnikRepository).findById(1);
-        verify(proizvodRepository).findById(1);
+        verify(proizvodRepository).findById(2);
         verify(unosNikotinaService).spremiUnosNikotina(any(UnosNikotina.class));
+        verify(unosNikotinaMapper).toDTO(any(UnosNikotina.class));
     }
 }

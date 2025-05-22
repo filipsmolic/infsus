@@ -24,6 +24,7 @@ public class UnosNikotinaMapper {
         dto.setKolicina(u.getKolicina());
         dto.setIdKorisnik(u.getKorisnik() != null ? u.getKorisnik().getIdKorisnik() : null);
         dto.setIdProizvod(u.getProizvod() != null ? u.getProizvod().getIdProizvod() : null);
+        dto.setDatum(u.getDatum());
         return dto;
     }
 
@@ -31,6 +32,7 @@ public class UnosNikotinaMapper {
         UnosNikotina u = new UnosNikotina();
         u.setIdUnosNikotina(dto.getIdUnosNikotina());
         u.setKolicina(dto.getKolicina());
+        u.setDatum(dto.getDatum());
         if (dto.getIdKorisnik() != null) {
             u.setKorisnik(korisnikRepository.findById(dto.getIdKorisnik()).orElse(null));
         }
