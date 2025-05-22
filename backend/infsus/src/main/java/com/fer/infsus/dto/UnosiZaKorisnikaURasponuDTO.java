@@ -11,4 +11,5 @@ public class UnosiZaKorisnikaURasponuDTO {
     private Integer idProizvod;
     private LocalDateTime datum;
     private String opisProizvoda;
+    private Double nikotinSadrzaj;
 }

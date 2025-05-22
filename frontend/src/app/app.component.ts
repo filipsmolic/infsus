@@ -1,18 +1,22 @@
 import { Component } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule],
+  standalone: true,
+  imports: [RouterOutlet, RouterModule, CommonModule],
   template: `
     <div class="min-h-screen bg-gray-900 text-white">
       <!-- Header -->
-      <header
+      <header 
+        *ngIf="!isLoginPage"
         class="px-6 py-4 text-xl font-bold"
         style="background-color: #73EC8B; color: #1f1f1f;"
       >
         <a
-          routerLink="/"
+          routerLink="/home"
           class="hover:underline"
           style="color: inherit; text-decoration: none;"
         >
@@ -20,9 +24,9 @@ import { RouterModule, RouterOutlet } from '@angular/router';
         </a>
       </header>
 
-      <main class="p-6 grid grid-cols-1 md:grid-cols-[56px_1fr_320px] gap-6">
+      <main [class]="isLoginPage ? '' : 'p-6 grid grid-cols-1 md:grid-cols-[56px_1fr_320px] gap-6'">
         <!-- Sidebar Tabs -->
-        <nav class="hidden md:flex flex-col space-y-4">
+        <nav *ngIf="!isLoginPage" class="hidden md:flex flex-col space-y-4">
           <a
             class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-green-400 transition"
             title="Unos nikotina"
@@ -69,7 +73,7 @@ import { RouterModule, RouterOutlet } from '@angular/router';
         </nav>
 
         <!-- Page Content -->
-        <section class="md:col-span-2">
+        <section [class]="isLoginPage ? 'h-screen w-screen' : 'md:col-span-2'">
           <router-outlet></router-outlet>
         </section>
       </main>
@@ -79,4 +83,13 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'frontend';
+  isLoginPage = false;
+
+  constructor(private router: Router) {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.isLoginPage = event.url === '/login' || event.url === '/';
+      });
+  }
 }
