@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TipProizvodaControllerService } from '../api';
+import { TipProizvodaDTO } from '../api/model/tipProizvodaDTO';
 
 @Component({
   standalone: true,
@@ -45,14 +47,19 @@ import { FormsModule } from '@angular/forms';
           >
             <div class="flex-1">
               <label class="block mb-1 text-gray-300">Proizvod</label>
-              <input
-                type="text"
+              <select
                 class="w-full p-3 rounded bg-gray-700 text-white"
                 [(ngModel)]="entry.product"
                 [name]="'product' + i"
-                placeholder="Naziv proizvoda"
                 required
-              />
+              >
+                <option value="" disabled selected>
+                  Odaberi tip proizvoda
+                </option>
+                <option *ngFor="let tip of productTypes" [value]="tip.naziv">
+                  {{ tip.naziv }}
+                </option>
+              </select>
             </div>
             <div class="w-32">
               <label class="block mb-1 text-gray-300">Količina</label>
@@ -98,9 +105,29 @@ import { FormsModule } from '@angular/forms';
   `,
 })
 export class NicotineIntakePageComponent {
+  private productService = inject(TipProizvodaControllerService);
+
   date: string = new Date().toISOString().substring(0, 10);
   products = [{ product: '', quantity: 0 }];
   totalQuantity = 0;
+
+  productTypes: TipProizvodaDTO[] = [];
+
+  ngOnInit(): void {
+    this.fetchProductTypes();
+  }
+
+  fetchProductTypes(): void {
+    this.productService.sviTipovi().subscribe({
+      next: (data) => {
+        this.productTypes = data;
+        console.log('Fetched product types:', data);
+      },
+      error: (err) => {
+        console.error('Error fetching product types', err);
+      },
+    });
+  }
 
   addProduct() {
     this.products.push({ product: '', quantity: 0 });
