@@ -13,22 +13,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/unosi-nikotina")
-@RequiredArgsConstructor
+
 public class UnosNikotinaController {
     private final UnosNikotinaService unosNikotinaService;
 
-    @Autowired
+    //@Autowired
     private KorisnikRepository korisnikRepository;
-    @Autowired
+    //@Autowired
     private ProizvodRepository proizvodRepository;
 
-    @GetMapping
+    public UnosNikotinaController(UnosNikotinaService unosNikotinaService, 
+                                   KorisnikRepository korisnikRepository,
+                                   ProizvodRepository proizvodRepository) {
+        this.unosNikotinaService = unosNikotinaService;
+        this.korisnikRepository = korisnikRepository;
+        this.proizvodRepository = proizvodRepository;
+    }
+
+    @GetMapping(produces = "application/json")
     public List<UnosNikotinaDTO> sviUnosiNikotina() {
         return unosNikotinaService.sviUnosiNikotina().stream().map(this::toDTO).collect(Collectors.toList());
     }
