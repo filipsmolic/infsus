@@ -16,5 +16,6 @@ export interface UnosiZaKorisnikaURasponuDTO {
     idProizvod?: number;
     datum?: string;
     opisProizvoda?: string;
+    nikotinSadrzaj?: number;
 }
 
