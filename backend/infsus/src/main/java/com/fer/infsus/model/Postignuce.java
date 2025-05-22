@@ -13,6 +13,7 @@ import java.util.*;
 @NoArgsConstructor
 public class Postignuce {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdPostignuce")
     private Integer idPostignuce;
 

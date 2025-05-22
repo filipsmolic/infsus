@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class UnosKupnje {
     @Id
     @Column(name = "IdKupnja")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idKupnja;
 
     @Column(name = "Datum")

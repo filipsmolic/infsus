@@ -9,11 +9,11 @@ import lombok.Setter;
 @Setter
 public class PostotnoPostignuce {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idPostignuce;
     private Integer postotakUvjet;
 
     @OneToOne
     @JoinColumn(name = "idPostignuce", referencedColumnName = "idPostignuce", insertable = false, updatable = false)
     private Postignuce postignuce;
-
 }

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Savjet {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdSavjet")
     private Integer idSavjet;
 
