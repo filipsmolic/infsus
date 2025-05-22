@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class ProizvodController {
     private final ProizvodService proizvodService;
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public List<ProizvodDTO> sviProizvodi() {
         return proizvodService.sviProizvodi().stream().map(this::toDTO).collect(Collectors.toList());
     }

@@ -33,6 +33,13 @@ import { RouterModule, RouterOutlet } from '@angular/router';
             >
           </a>
           <a
+            class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-orange-400 transition"
+            title="Povijest unosa"
+            routerLink="/nicotine-history"
+          >
+            <span class="material-icons text-orange-300 text-3xl">history</span>
+          </a>
+          <a
             class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-blue-400 transition"
             title="Kupnja nikotina"
             routerLink="/nicotine-purchase"

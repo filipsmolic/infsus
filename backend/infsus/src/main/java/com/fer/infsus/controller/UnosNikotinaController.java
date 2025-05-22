@@ -2,6 +2,7 @@ package com.fer.infsus.controller;
 
 import com.fer.infsus.dto.BatchUnosNikotinaDTO;
 import com.fer.infsus.dto.UnosNikotinaDTO;
+import com.fer.infsus.dto.UnosiZaKorisnikaURasponuDTO;
 import com.fer.infsus.model.Korisnik;
 import com.fer.infsus.model.Proizvod;
 import com.fer.infsus.model.UnosNikotina;
@@ -66,12 +67,12 @@ public class UnosNikotinaController {
     }
 
     @GetMapping("/korisnik/{idKorisnik}")
-    public List<UnosNikotinaDTO> unosiZaKorisnikaURasponu(
+    public List<UnosiZaKorisnikaURasponuDTO> unosiZaKorisnikaURasponu(
             @PathVariable Integer idKorisnik,
             @RequestParam("od") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime od,
             @RequestParam("do") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime doVremena) {
         return unosNikotinaService.unosiZaKorisnikaURasponu(idKorisnik, od, doVremena)
-                .stream().map(this::toDTO).collect(Collectors.toList());
+                .stream().map(this::toUnosiZaKorisnikaURasponuDTO).collect(Collectors.toList());
     }
 
     @PostMapping("/batch")
@@ -108,5 +109,16 @@ public class UnosNikotinaController {
             u.setProizvod(proizvodRepository.findById(dto.getIdProizvod()).orElse(null));
         }
         return u;
+    }
+
+    private UnosiZaKorisnikaURasponuDTO toUnosiZaKorisnikaURasponuDTO(UnosNikotina u) {
+        UnosiZaKorisnikaURasponuDTO dto = new UnosiZaKorisnikaURasponuDTO();
+        dto.setIdUnosNikotina(u.getIdUnosNikotina());
+        dto.setKolicina(u.getKolicina());
+        dto.setIdKorisnik(u.getKorisnik() != null ? u.getKorisnik().getIdKorisnik() : null);
+        dto.setIdProizvod(u.getProizvod() != null ? u.getProizvod().getIdProizvod() : null);
+        dto.setDatum(u.getDatum());
+        dto.setOpisProizvoda(u.getProizvod() != null ? u.getProizvod().getOpis() : null);
+        return dto;
     }
 }
