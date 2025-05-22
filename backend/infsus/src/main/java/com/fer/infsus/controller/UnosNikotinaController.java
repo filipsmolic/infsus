@@ -57,7 +57,7 @@ public class UnosNikotinaController {
         unosNikotinaService.obrisiUnosNikotina(id);
     }
 
-    @GetMapping("/korisnik/{idKorisnik}")
+    @GetMapping(value = "/korisnik/{idKorisnik}", produces = "application/json")
     public List<UnosiZaKorisnikaURasponuDTO> unosiZaKorisnikaURasponu(
             @PathVariable Integer idKorisnik,
             @RequestParam("od") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime od,

@@ -9,4 +9,5 @@ export * from './savjetDTO';
 export * from './tipProizvodaDTO';
 export * from './unosKupnjeDTO';
 export * from './unosNikotinaDTO';
+export * from './unosiZaKorisnikaURasponuDTO';
 export * from './vremenskoPostignuceDTO';

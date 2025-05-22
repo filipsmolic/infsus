@@ -20,6 +20,8 @@ import { Observable }                                        from 'rxjs';
 import { BatchUnosNikotinaDTO } from '../model/batchUnosNikotinaDTO';
 // @ts-ignore
 import { UnosNikotinaDTO } from '../model/unosNikotinaDTO';
+// @ts-ignore
+import { UnosiZaKorisnikaURasponuDTO } from '../model/unosiZaKorisnikaURasponuDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -391,10 +393,10 @@ export class UnosNikotinaControllerService extends BaseService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public unosiZaKorisnikaURasponu(idKorisnik: number, od: string, _do: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<UnosNikotinaDTO>>;
-    public unosiZaKorisnikaURasponu(idKorisnik: number, od: string, _do: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UnosNikotinaDTO>>>;
-    public unosiZaKorisnikaURasponu(idKorisnik: number, od: string, _do: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UnosNikotinaDTO>>>;
-    public unosiZaKorisnikaURasponu(idKorisnik: number, od: string, _do: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public unosiZaKorisnikaURasponu(idKorisnik: number, od: string, _do: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<UnosiZaKorisnikaURasponuDTO>>;
+    public unosiZaKorisnikaURasponu(idKorisnik: number, od: string, _do: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UnosiZaKorisnikaURasponuDTO>>>;
+    public unosiZaKorisnikaURasponu(idKorisnik: number, od: string, _do: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UnosiZaKorisnikaURasponuDTO>>>;
+    public unosiZaKorisnikaURasponu(idKorisnik: number, od: string, _do: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (idKorisnik === null || idKorisnik === undefined) {
             throw new Error('Required parameter idKorisnik was null or undefined when calling unosiZaKorisnikaURasponu.');
         }
@@ -414,7 +416,7 @@ export class UnosNikotinaControllerService extends BaseService {
         let localVarHeaders = this.defaultHeaders;
 
         const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
-            '*/*'
+            'application/json'
         ]);
         if (localVarHttpHeaderAcceptSelected !== undefined) {
             localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
@@ -438,7 +440,7 @@ export class UnosNikotinaControllerService extends BaseService {
 
         let localVarPath = `/api/unosi-nikotina/korisnik/${this.configuration.encodeParam({name: "idKorisnik", value: idKorisnik, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<Array<UnosNikotinaDTO>>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<Array<UnosiZaKorisnikaURasponuDTO>>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

@@ -29,6 +29,7 @@ model/savjetDTO.ts
 model/tipProizvodaDTO.ts
 model/unosKupnjeDTO.ts
 model/unosNikotinaDTO.ts
+model/unosiZaKorisnikaURasponuDTO.ts
 model/vremenskoPostignuceDTO.ts
 param.ts
 variables.ts
