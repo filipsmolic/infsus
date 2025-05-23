@@ -15,7 +15,7 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
       class="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-start"
     >
       <h1 class="text-3xl font-bold mb-6">Povijest unosa nikotina</h1>
-      <!-- Edit Modal -->
+
       <div
         *ngIf="editFormVisible"
         style="background: rgba(31, 41, 55, 0.7)"
@@ -146,8 +146,10 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
               <td class="p-3 text-center">{{ unos.kolicina }}</td>
               <td class="p-3 text-center">
                 {{
-                  (unos.kolicina ? +unos.kolicina : 0) *
+                  (
+                    (unos.kolicina ? +unos.kolicina : 0) *
                     (unos.nikotinSadrzaj ? +unos.nikotinSadrzaj : 0)
+                  ).toFixed(2)
                 }}
                 mg
               </td>
@@ -175,7 +177,7 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
             </tr>
           </tbody>
         </table>
-        <!-- Pagination Footer -->
+
         <div
           *ngIf="totalPages > 1"
           class="flex justify-center items-center mt-4 space-x-2"
@@ -218,14 +220,14 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
 })
 export class NicotineHistoryPageComponent {
   private unosNikotinaService = inject(UnosNikotinaControllerService);
-  private proizvodService = inject(ProizvodControllerService); // FIX: inject as class field
+  private proizvodService = inject(ProizvodControllerService);
   history: UnosiZaKorisnikaURasponuDTO[] = [];
   dateFrom: string = '';
   dateTo: string = '';
   productsList: ProizvodDTO[] = [];
   editFormVisible = false;
   editForm: any = {};
-  // Pagination state
+
   page: number = 0;
   size: number = 10;
   totalPages: number = 1;
@@ -337,7 +339,6 @@ export class NicotineHistoryPageComponent {
     }
   }
 
-  // Pagination controls
   goToPage(page: number) {
     if (page >= 0 && page < this.totalPages) {
       this.fetchHistory(page);
