@@ -8,13 +8,12 @@
  * Do not edit the class manually.
  */
 
-export interface UnosiZaKorisnikaURasponuDTO { 
-    idUnosNikotina?: number;
+export interface UnosiKupnjeZaKorisnikaURasponuDTO { 
+    idKupnja?: number;
     kolicina?: number;
+    cijena?: number;
     idKorisnik?: number;
     idProizvod?: number;
     datum?: string;
     opisProizvoda?: string;
-    nikotinSadrzaj?: number;
-}
-
+} 
