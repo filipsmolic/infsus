@@ -9,11 +9,11 @@
  */
 
 
-export interface UnosNikotinaDTO { 
-    idUnosNikotina?: number;
-    kolicina?: number;
-    idKorisnik?: number;
-    idProizvod?: number;
-    datum?: string;
+export interface SortObject { 
+    direction?: string;
+    nullHandling?: string;
+    ascending?: boolean;
+    property?: string;
+    ignoreCase?: boolean;
 }
 
