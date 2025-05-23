@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterModule, RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import {
+  RouterModule,
+  RouterOutlet,
+  Router,
+  NavigationEnd,
+} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 
@@ -10,7 +15,7 @@ import { filter } from 'rxjs/operators';
   template: `
     <div class="min-h-screen bg-gray-900 text-white">
       <!-- Header -->
-      <header 
+      <header
         *ngIf="!isLoginPage"
         class="px-6 py-4 text-xl font-bold"
         style="background-color: #73EC8B; color: #1f1f1f;"
@@ -24,7 +29,13 @@ import { filter } from 'rxjs/operators';
         </a>
       </header>
 
-      <main [class]="isLoginPage ? '' : 'p-6 grid grid-cols-1 md:grid-cols-[56px_1fr_320px] gap-6'">
+      <main
+        [class]="
+          isLoginPage
+            ? ''
+            : 'p-6 grid grid-cols-1 md:grid-cols-[56px_1fr_320px] gap-6'
+        "
+      >
         <!-- Sidebar Tabs -->
         <nav *ngIf="!isLoginPage" class="hidden md:flex flex-col space-y-4">
           <a
@@ -79,7 +90,6 @@ import { filter } from 'rxjs/operators';
       </main>
     </div>
   `,
-  styleUrl: './app.component.css',
 })
 export class AppComponent {
   title = 'frontend';
@@ -87,7 +97,7 @@ export class AppComponent {
 
   constructor(private router: Router) {
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.isLoginPage = event.url === '/login' || event.url === '/';
       });

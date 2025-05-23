@@ -31,7 +31,7 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
             <span class="material-icons">close</span>
           </button>
           <h2 class="text-xl font-bold mb-4">Uredi unos</h2>
-          <form (ngSubmit)="saveEdit()" class="space-y-4">
+          <form (ngSubmit)="saveEdit()" class="space-y-4" name="editForm">
             <div>
               <label class="block mb-1">Datum</label>
               <input
@@ -40,7 +40,23 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
                 [(ngModel)]="editForm.datum"
                 name="editDatum"
                 required
+                [max]="maxDate"
+                #editDatumModel="ngModel"
               />
+              <div
+                *ngIf="
+                  editDatumModel.invalid &&
+                  (editDatumModel.dirty || editDatumModel.touched)
+                "
+                class="text-red-400 text-sm mt-1"
+              >
+                <small *ngIf="editDatumModel.errors?.['required']"
+                  >Datum je obavezan.</small
+                >
+                <small *ngIf="editDatumModel.errors?.['max']"
+                  >Datum ne može biti u budućnosti.</small
+                >
+              </div>
             </div>
             <div>
               <label class="block mb-1">Proizvod</label>
@@ -48,8 +64,9 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
                 class="w-full p-2 rounded bg-gray-700 text-white"
                 [(ngModel)]="editForm.idProizvod"
                 name="editProizvod"
-                required
+                #editProizvodModel="ngModel"
               >
+                <option value="" disabled selected>Odaberi proizvod</option>
                 <option
                   *ngFor="let proizvod of productsList"
                   [value]="proizvod.idProizvod"
@@ -67,7 +84,22 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
                 name="editKolicina"
                 min="1"
                 required
+                #editKolicinaModel="ngModel"
               />
+              <div
+                *ngIf="
+                  editKolicinaModel.invalid &&
+                  (editKolicinaModel.dirty || editKolicinaModel.touched)
+                "
+                class="text-red-400 text-sm mt-1"
+              >
+                <small *ngIf="editKolicinaModel.errors?.['required']"
+                  >Količina je obavezna.</small
+                >
+                <small *ngIf="editKolicinaModel.errors?.['min']"
+                  >Količina mora biti barem 1.</small
+                >
+              </div>
             </div>
             <div class="flex justify-end space-x-2">
               <button
@@ -80,6 +112,11 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
               <button
                 type="submit"
                 class="px-4 py-2 rounded bg-[#D2FF72] hover:bg-[#73EC8B] text-gray-900 font-semibold"
+                [disabled]="
+                  editDatumModel.invalid ||
+                  editProizvodModel.invalid ||
+                  editKolicinaModel.invalid
+                "
               >
                 Spremi
               </button>
@@ -233,6 +270,8 @@ export class NicotineHistoryPageComponent {
   totalPages: number = 1;
   totalElements: number = 0;
 
+  maxDate: string = new Date().toISOString().substring(0, 10);
+
   ngOnInit() {
     this.fetchProducts();
     this.fetchHistory();
@@ -303,6 +342,17 @@ export class NicotineHistoryPageComponent {
   }
 
   saveEdit() {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    const selectedDate = new Date(this.editForm.datum + 'T00:00:00');
+    if (selectedDate > today) {
+      alert('Datum ne može biti u budućnosti.');
+      return;
+    }
+    if (!this.editForm.kolicina || this.editForm.kolicina < 1) {
+      alert('Količina mora biti barem 1.');
+      return;
+    }
     const updated = {
       idUnosNikotina: this.editForm.idUnosNikotina,
       datum: this.editForm.datum + 'T00:00:00',
@@ -310,7 +360,6 @@ export class NicotineHistoryPageComponent {
       kolicina: this.editForm.kolicina,
       idKorisnik: 1,
     };
-    console.log('Updated entry:', updated);
     this.unosNikotinaService
       .azurirajUnosNikotina(updated.idUnosNikotina, updated)
       .subscribe({
