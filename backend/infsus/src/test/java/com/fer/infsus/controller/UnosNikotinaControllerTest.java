@@ -162,7 +162,7 @@ public class UnosNikotinaControllerTest {
     @Test
     void dodajUnosNikotina_ValidDTO_ReturnsSavedDTO() throws Exception {
         // Arrange
-        LocalDateTime testDatum = LocalDateTime.of(2025, 6, 15, 14, 30);
+        LocalDateTime testDatum = LocalDateTime.now();
         
         UnosNikotinaDTO inputDto = new UnosNikotinaDTO();
         inputDto.setKolicina(15);
@@ -211,7 +211,7 @@ public class UnosNikotinaControllerTest {
     @Test
     void azurirajUnosNikotina_ValidDTO_ReturnsUpdatedDTO() throws Exception {
         // Arrange
-        LocalDateTime testDatum = LocalDateTime.of(2025, 6, 15, 14, 30);
+        LocalDateTime testDatum = LocalDateTime.now();
         
         UnosNikotinaDTO inputDto = new UnosNikotinaDTO();
         inputDto.setKolicina(25);
