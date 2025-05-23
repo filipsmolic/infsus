@@ -21,11 +21,14 @@ model/batchUnosNikotinaDTO.ts
 model/korisnikDTO.ts
 model/models.ts
 model/ostvarioDTO.ts
+model/pageUnosiZaKorisnikaURasponuDTO.ts
+model/pageableObject.ts
 model/postignuceDTO.ts
 model/postotnoPostignuceDTO.ts
 model/proizvodDTO.ts
 model/proizvodUnosDTO.ts
 model/savjetDTO.ts
+model/sortObject.ts
 model/tipProizvodaDTO.ts
 model/unosKupnjeDTO.ts
 model/unosNikotinaDTO.ts

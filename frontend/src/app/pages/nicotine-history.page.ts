@@ -175,6 +175,43 @@ import { ProizvodDTO } from '../api/model/proizvodDTO';
             </tr>
           </tbody>
         </table>
+        <!-- Pagination Footer -->
+        <div
+          *ngIf="totalPages > 1"
+          class="flex justify-center items-center mt-4 space-x-2"
+        >
+          <button
+            (click)="goToPage(page - 1)"
+            [disabled]="page === 0"
+            class="px-2 py-1 rounded bg-gray-700 text-white disabled:opacity-50"
+          >
+            &lt;
+          </button>
+          <ng-container
+            *ngFor="let p of [].constructor(totalPages); let i = index"
+          >
+            <button
+              (click)="goToPage(i)"
+              [class.bg-[#D2FF72]]="i === page"
+              [class.text-gray-900]="i === page"
+              class="px-2 py-1 rounded"
+              [ngClass]="
+                i === page
+                  ? 'bg-[#D2FF72] text-gray-900 font-bold'
+                  : 'bg-gray-700 text-white'
+              "
+            >
+              {{ i + 1 }}
+            </button>
+          </ng-container>
+          <button
+            (click)="goToPage(page + 1)"
+            [disabled]="page === totalPages - 1"
+            class="px-2 py-1 rounded bg-gray-700 text-white disabled:opacity-50"
+          >
+            &gt;
+          </button>
+        </div>
       </div>
     </div>
   `,
@@ -188,6 +225,11 @@ export class NicotineHistoryPageComponent {
   productsList: ProizvodDTO[] = [];
   editFormVisible = false;
   editForm: any = {};
+  // Pagination state
+  page: number = 0;
+  size: number = 10;
+  totalPages: number = 1;
+  totalElements: number = 0;
 
   ngOnInit() {
     this.fetchProducts();
@@ -203,29 +245,34 @@ export class NicotineHistoryPageComponent {
       });
   }
 
-  fetchHistory() {
-    // Always use unosiZaKorisnikaURasponu for fetching
+  fetchHistory(page: number = this.page) {
     const today = new Date().toISOString().substring(0, 10) + 'T00:00:00';
     const from = this.dateFrom
       ? this.dateFrom + 'T00:00:00'
       : '2000-01-01T00:00:00';
     const to = this.dateTo ? this.dateTo + 'T00:00:00' : today;
-    console.log('Fetching history from', from, 'to', to);
-    this.unosNikotinaService.unosiZaKorisnikaURasponu(1, from, to).subscribe({
-      next: (data) => {
-        this.history = data;
-        console.log('Fetched history:', data);
-      },
-      error: (err) => {
-        this.history = [];
-      },
-    });
+    this.unosNikotinaService
+      .unosiZaKorisnikaURasponu(1, from, to, page, this.size)
+      .subscribe({
+        next: (data) => {
+          this.history = data.content || [];
+          this.totalPages = data.totalPages || 1;
+          this.totalElements = data.totalElements || 0;
+          this.page = data.number || 0;
+        },
+        error: () => {
+          this.history = [];
+          this.totalPages = 1;
+          this.totalElements = 0;
+        },
+      });
   }
 
   clearFilters() {
     this.dateFrom = '';
     this.dateTo = '';
-    this.fetchHistory();
+    this.page = 0;
+    this.fetchHistory(0);
   }
 
   formatDate(dateStr: string | undefined): string {
@@ -259,7 +306,9 @@ export class NicotineHistoryPageComponent {
       datum: this.editForm.datum + 'T00:00:00',
       idProizvod: this.editForm.idProizvod,
       kolicina: this.editForm.kolicina,
+      idKorisnik: 1,
     };
+    console.log('Updated entry:', updated);
     this.unosNikotinaService
       .azurirajUnosNikotina(updated.idUnosNikotina, updated)
       .subscribe({
@@ -285,6 +334,13 @@ export class NicotineHistoryPageComponent {
             alert('Greška pri brisanju unosa!');
           },
         });
+    }
+  }
+
+  // Pagination controls
+  goToPage(page: number) {
+    if (page >= 0 && page < this.totalPages) {
+      this.fetchHistory(page);
     }
   }
 }
