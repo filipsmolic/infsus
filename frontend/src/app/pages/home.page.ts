@@ -3,17 +3,13 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, inject } from 
 import { RouterModule } from '@angular/router';
 import Chart from 'chart.js/auto';
 import { UnosNikotinaControllerService } from '../api/api/unosNikotinaController.service';
-import { UnosKupnjeControllerService } from '../api/api/unosKupnjeController.service';
 import { UnosNikotinaDTO } from '../api/model/unosNikotinaDTO';
-import { UnosKupnjeDTO } from '../api/model/unosKupnjeDTO';
 
 // Prošireni tipovi koji uključuju datum
 interface UnosNikotinaExtended extends UnosNikotinaDTO {
   datum?: string;
-}
-
-interface UnosKupnjeExtended extends UnosKupnjeDTO {
-  datum?: string;
+  nikotinSadrzaj?: number;
+  opisProizvoda?: string;
 }
 
 @Component({
@@ -21,9 +17,9 @@ interface UnosKupnjeExtended extends UnosKupnjeDTO {
   selector: 'home-page',
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
       <div class="text-center mb-6">
-        <h2 class="text-4xl font-bold" style="color: #D2FF72;">
+        <h2 class="text-7xl font-bold" style="color: #D2FF72;">
           {{ totalTodayNicotine }} <span class="text-xl font-normal text-white">mg</span>
         </h2>
         <p class="text-lg text-gray-300">danas</p>
@@ -33,17 +29,9 @@ interface UnosKupnjeExtended extends UnosKupnjeDTO {
         <div class="w-full">
           <h3 class="mb-2 text-xl font-semibold" style="color: #D2FF72;">Tjedni unos nikotina</h3>
           <div
-            class="h-72 bg-gray-700 rounded-md p-4"
+            class="h-80 bg-gray-700 rounded-md p-2 w-full"
           >
             <canvas #nicotineChart></canvas>
-          </div>
-        </div>
-        <div class="w-full">
-          <h3 class="mb-2 text-xl font-semibold" style="color: #D2FF72;">Tjedna potrošnja na kupnju</h3>
-          <div
-            class="h-72 bg-gray-700 rounded-md p-4"
-          >
-            <canvas #purchaseChart></canvas>
           </div>
         </div>
       </div>
@@ -52,15 +40,11 @@ interface UnosKupnjeExtended extends UnosKupnjeDTO {
 })
 export class HomePageComponent implements OnInit, AfterViewInit {
   @ViewChild('nicotineChart') nicotineChartRef!: ElementRef;
-  @ViewChild('purchaseChart') purchaseChartRef!: ElementRef;
   
   private unosNikotinaService = inject(UnosNikotinaControllerService);
-  private unosKupnjeService = inject(UnosKupnjeControllerService);
   
   nicotineData: UnosNikotinaExtended[] = [];
-  purchaseData: UnosKupnjeExtended[] = [];
   nicotineChart: any | null = null;
-  purchaseChart: any | null = null;
   totalTodayNicotine: number = 0;
   
   ngOnInit(): void {
@@ -72,20 +56,22 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   }
   
   fetchData(): void {
-    // Dohvati podatke za zadnjih 7 dana
-    const today = new Date();
-    const weekAgo = new Date();
-    weekAgo.setDate(today.getDate() - 7);
+    const today = new Date(); // Get current date and time
+    today.setHours(23, 59, 59, 999); // Set time to end of the day
+
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 6); // Go back 6 days to get a 7-day range including today
+    sevenDaysAgo.setHours(0, 0, 0, 0); // Set time to start of that day
     
     const todayStr = today.toISOString();
-    const weekAgoStr = weekAgo.toISOString();
+    const sevenDaysAgoStr = sevenDaysAgo.toISOString();
     
-    console.log("Fetching data for date range:", weekAgoStr, "to", todayStr);
+    console.log("Date range for nicotine data:", sevenDaysAgoStr, "to", todayStr);
     
     // Dohvati unos nikotina za korisnika s id=1
     this.unosNikotinaService.unosiZaKorisnikaURasponu(
       1,
-      weekAgoStr,
+      sevenDaysAgoStr,
       todayStr
     ).subscribe({
       next: (response) => {
@@ -98,8 +84,6 @@ export class HomePageComponent implements OnInit, AfterViewInit {
           this.nicotineData = response as unknown as UnosNikotinaExtended[];
         }
         
-        console.log("Processed nicotine data:", this.nicotineData);
-        
         this.calculateTodayNicotine();
         setTimeout(() => {
           this.initNicotineChart();
@@ -107,56 +91,29 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       },
       error: (error) => {
         console.error('Error fetching nicotine data:', error);
-        // U slučaju greške, prikaži prazne podatke
         this.initNicotineChart();
-      }
-    });
-    
-    // Dohvati podatke o kupnji za korisnika s id=1
-    this.unosKupnjeService.unosiKupnjeZaKorisnikaURasponu(
-      1,
-      weekAgoStr,
-      todayStr
-    ).subscribe({
-      next: (data) => {
-        console.log("Purchase data received:", data);
-        
-        if (data && typeof data === 'object' && 'content' in data) {
-          this.purchaseData = data.content as UnosKupnjeExtended[];
-        } else {
-          this.purchaseData = data as unknown as UnosKupnjeExtended[];
-        }
-        
-        console.log("Processed purchase data:", this.purchaseData);
-        
-        setTimeout(() => {
-          this.initPurchaseChart();
-        }, 100);
-      },
-      error: (error) => {
-        console.error('Error fetching purchase data:', error);
-        // U slučaju greške, prikaži prazne podatke
-        this.initPurchaseChart();
       }
     });
   }
   
   calculateTodayNicotine(): void {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const todayStart = new Date(); 
+    todayStart.setHours(0, 0, 0, 0); // Start of today
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999); // End of today
     
     // Filtriraj samo današnje unose
     const todayEntries = this.nicotineData.filter(entry => {
       if (!entry.datum) return false;
       
       const entryDate = new Date(entry.datum);
-      const entryDay = new Date(entryDate);
-      entryDay.setHours(0, 0, 0, 0);
-      return entryDay.getTime() === today.getTime();
+      // No need to normalize entryDate to start of day if comparing against a range
+      return entryDate >= todayStart && entryDate <= todayEnd;
     });
     
     // Zbroji ukupnu količinu nikotina za danas
-    this.totalTodayNicotine = todayEntries.reduce((sum, entry) => sum + (entry.kolicina || 0), 0);
+    this.totalTodayNicotine = todayEntries.reduce((sum, entry) => sum + ((entry.kolicina ?? 0) * (entry.nikotinSadrzaj ?? 0)), 0);
   }
   
   initNicotineChart(): void {
@@ -177,7 +134,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
     const last7Days = this.getLast7Days();
     console.log('Last 7 days:', last7Days);
     
-    const nicotineByDay = this.groupDataByDay(this.nicotineData, 'kolicina');
+    const nicotineByDay = this.groupNicotineDataByDay(this.nicotineData);
     console.log('Nicotine data by day:', nicotineByDay);
     
     const chartData = last7Days.map(day => {
@@ -212,7 +169,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       this.nicotineChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels,
+          labels,
           datasets: [{
             label: 'Unos nikotina (mg)',
             data: chartData,
@@ -224,6 +181,13 @@ export class HomePageComponent implements OnInit, AfterViewInit {
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: {
+              left: 10,
+              right: 30
+            }
+          },
           scales: {
             y: {
               beginAtZero: true,
@@ -239,7 +203,10 @@ export class HomePageComponent implements OnInit, AfterViewInit {
                 color: 'rgba(255, 255, 255, 0.1)'
               },
               ticks: {
-                color: '#ffffff'
+                color: '#ffffff',
+                maxTicksLimit: 7,
+                autoSkip: false,
+                padding: 18
               }
             }
           },
@@ -258,104 +225,27 @@ export class HomePageComponent implements OnInit, AfterViewInit {
     }
   }
   
-  initPurchaseChart(): void {
-    console.log('Initializing purchase chart with data:', this.purchaseData);
-    
-    if (!this.purchaseChartRef || !this.purchaseChartRef.nativeElement) {
-      console.error('Purchase chart canvas element not available');
-      return;
-    }
-    
-    const ctx = this.purchaseChartRef.nativeElement.getContext('2d');
-    if (!ctx) {
-      console.error('Failed to get 2d context from canvas');
-      return;
-    }
-    
-    // Grupiraj podatke po danima
-    const last7Days = this.getLast7Days();
-    const purchaseByDay = this.groupDataByDay(this.purchaseData, 'cijena');
-    console.log('Purchase data by day:', purchaseByDay);
-    
-    const chartData = last7Days.map(day => {
-      const dayStr = day.toISOString().split('T')[0];
-      return purchaseByDay[dayStr] || 0;
-    });
-    console.log('Chart data points:', chartData);
-    
-    // Nazivi dana u tjednu
-    const labels = last7Days.map(date => {
-      const dayNames = ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'];
-      return dayNames[date.getDay()];
-    });
-    
-    if (this.purchaseChart) {
-      console.log('Destroying old chart');
-      this.purchaseChart.destroy();
-    }
-    
-    try {
-      this.purchaseChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Potrošnja (€)',
-            data: chartData,
-            backgroundColor: '#D2FF72',
-            borderColor: 'rgba(210, 255, 114, 0.8)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              grid: {
-                color: 'rgba(255, 255, 255, 0.1)'
-              },
-              ticks: {
-                color: '#ffffff'
-              }
-            },
-            x: {
-              grid: {
-                color: 'rgba(255, 255, 255, 0.1)'
-              },
-              ticks: {
-                color: '#ffffff'
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              labels: {
-                color: '#ffffff'
-              }
-            }
-          }
-        }
-      });
-      console.log('Chart created successfully:', this.purchaseChart);
-    } catch (error) {
-      console.error('Error creating chart:', error);
-    }
-  }
-  
   getLast7Days(): Date[] {
     const result: Date[] = [];
+    const today = new Date(); // Use current date
+    
     for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      date.setHours(0, 0, 0, 0);
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      date.setHours(0, 0, 0, 0); // Keep normalizing to start of day for labels
       result.push(date);
     }
+    console.log("Last 7 days dates for chart labels:", result.map(d => d.toISOString().split('T')[0]));
     return result;
   }
   
-  groupDataByDay<T extends { datum?: string }>(data: T[], valueField: keyof T): Record<string, number> {
+  groupNicotineDataByDay(data: UnosNikotinaExtended[]): Record<string, number> {
     const result: Record<string, number> = {};
+    
+    if (!data || !Array.isArray(data)) {
+      console.error('Invalid data passed to groupNicotineDataByDay:', data);
+      return result;
+    }
     
     data.forEach(item => {
       if (item.datum) {
@@ -366,9 +256,9 @@ export class HomePageComponent implements OnInit, AfterViewInit {
           result[dayStr] = 0;
         }
         
-        // Zbrajamo vrijednosti za taj dan
-        const value = item[valueField] as unknown as number || 0;
-        result[dayStr] += value;
+        // Izračunaj ukupnu količinu nikotina (kolicina * nikotinSadrzaj)
+        const totalNicotine = (item.kolicina ?? 0) * (item.nikotinSadrzaj ?? 0);
+        result[dayStr] += totalNicotine;
       }
     });
     
