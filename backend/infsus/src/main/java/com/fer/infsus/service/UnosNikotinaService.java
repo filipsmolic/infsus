@@ -34,18 +34,13 @@ public class UnosNikotinaService {
         unosNikotinaRepository.deleteById(id);
     }
 
-    /**
-     * Find entries for a user within a date range (non-pageable version)
-     * @deprecated Use the pageable version instead
-     */
+   
     @Deprecated
     public List<UnosNikotina> unosiZaKorisnikaURasponu(Integer idKorisnik, LocalDateTime od, LocalDateTime doVremena) {
         return unosNikotinaRepository.findByKorisnikIdKorisnikAndDatumBetween(idKorisnik, od, doVremena);
     }
     
-    /**
-     * Find entries for a user within a date range with pagination and sorting
-     */
+
     public Page<UnosNikotina> unosiZaKorisnikaURasponu(Integer idKorisnik, LocalDateTime od, LocalDateTime doVremena, Pageable pageable) {
         return unosNikotinaRepository.findByKorisnikIdKorisnikAndDatumBetween(idKorisnik, od, doVremena, pageable);
     }

@@ -51,7 +51,7 @@ public class ProizvodControllerTest {
     
     @BeforeEach
     void setUp() {
-        // Set up test data
+         
         tipProizvoda = new TipProizvoda();
         tipProizvoda.setIdTipProizvoda(1);
         tipProizvoda.setNaziv("Cigareta");
@@ -80,18 +80,18 @@ public class ProizvodControllerTest {
         proizvodDTO2.setNikotinSadrzaj(4.5);
         proizvodDTO2.setIdTipProizvoda(1);
         
-        // Set up mapper behavior
+         
         when(proizvodMapper.toDTO(proizvod1)).thenReturn(proizvodDTO1);
         when(proizvodMapper.toDTO(proizvod2)).thenReturn(proizvodDTO2);
     }
     
     @Test
     void sviProizvodi_ReturnsAllProizvodi() throws Exception {
-        // Arrange
+         
         List<Proizvod> proizvodi = Arrays.asList(proizvod1, proizvod2);
         when(proizvodService.sviProizvodi()).thenReturn(proizvodi);
         
-        // Act & Assert
+         
         mockMvc.perform(get("/api/proizvodi"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -108,10 +108,10 @@ public class ProizvodControllerTest {
     
     @Test
     void proizvodPoId_ExistingId_ReturnsProizvod() throws Exception {
-        // Arrange
+         
         when(proizvodService.proizvodPoId(1)).thenReturn(Optional.of(proizvod1));
         
-        // Act & Assert
+         
         mockMvc.perform(get("/api/proizvodi/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idProizvod", is(1)))
@@ -124,10 +124,10 @@ public class ProizvodControllerTest {
     
     @Test
     void proizvodPoId_NonExistingId_ReturnsNull() throws Exception {
-        // Arrange
+         
         when(proizvodService.proizvodPoId(99)).thenReturn(Optional.empty());
         
-        // Act & Assert
+         
         mockMvc.perform(get("/api/proizvodi/99"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
@@ -137,7 +137,7 @@ public class ProizvodControllerTest {
     
     @Test
     void dodajProizvod_ValidDTO_ReturnsSavedDTO() throws Exception {
-        // Arrange
+         
         ProizvodDTO inputDto = new ProizvodDTO();
         inputDto.setOpis("Winston");
         inputDto.setNikotinSadrzaj(4.2);
@@ -164,7 +164,7 @@ public class ProizvodControllerTest {
         when(proizvodService.spremiProizvod(entityToSave)).thenReturn(savedEntity);
         when(proizvodMapper.toDTO(savedEntity)).thenReturn(savedDto);
         
-        // Act & Assert
+         
         mockMvc.perform(post("/api/proizvodi")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
@@ -180,7 +180,7 @@ public class ProizvodControllerTest {
     
     @Test
     void azurirajProizvod_ValidDTO_ReturnsUpdatedDTO() throws Exception {
-        // Arrange
+         
         ProizvodDTO inputDto = new ProizvodDTO();
         inputDto.setOpis("Marlboro Gold");
         inputDto.setNikotinSadrzaj(4.8);
@@ -207,7 +207,7 @@ public class ProizvodControllerTest {
         when(proizvodService.spremiProizvod(any(Proizvod.class))).thenReturn(updatedEntity);
         when(proizvodMapper.toDTO(updatedEntity)).thenReturn(updatedDto);
         
-        // Act & Assert
+         
         mockMvc.perform(put("/api/proizvodi/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
@@ -223,10 +223,10 @@ public class ProizvodControllerTest {
     
     @Test
     void obrisiProizvod_ExistingId_Success() throws Exception {
-        // Arrange
+         
         doNothing().when(proizvodService).obrisiProizvod(1);
         
-        // Act & Assert
+         
         mockMvc.perform(delete("/api/proizvodi/1"))
                 .andExpect(status().isOk());
         

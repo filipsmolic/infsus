@@ -61,13 +61,13 @@ class KorisnikServiceTest {
 
     @Test
     void sviKorisnici_ReturnsList() {
-        // Arrange
+         
         when(korisnikRepository.findAll()).thenReturn(Arrays.asList(korisnik1, korisnik2));
 
-        // Act
+         
         List<Korisnik> result = korisnikService.sviKorisnici();
 
-        // Assert
+         
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(korisnik1, korisnik2);
         verify(korisnikRepository).findAll();
@@ -75,13 +75,13 @@ class KorisnikServiceTest {
 
     @Test
     void korisnikPoId_ExistingId_ReturnsKorisnik() {
-        // Arrange
+         
         when(korisnikRepository.findById(1)).thenReturn(Optional.of(korisnik1));
 
-        // Act
+         
         Optional<Korisnik> result = korisnikService.korisnikPoId(1);
 
-        // Assert
+         
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(korisnik1);
         verify(korisnikRepository).findById(1);
@@ -89,36 +89,36 @@ class KorisnikServiceTest {
 
     @Test
     void korisnikPoId_NonExistingId_ReturnsEmptyOptional() {
-        // Arrange
+         
         when(korisnikRepository.findById(99)).thenReturn(Optional.empty());
 
-        // Act
+         
         Optional<Korisnik> result = korisnikService.korisnikPoId(99);
 
-        // Assert
+         
         assertThat(result).isEmpty();
         verify(korisnikRepository).findById(99);
     }
 
     @Test
     void spremiKorisnika_ValidKorisnik_ReturnsSavedKorisnik() {
-        // Arrange
+         
         when(korisnikRepository.save(any(Korisnik.class))).thenReturn(korisnik1);
 
-        // Act
+         
         Korisnik result = korisnikService.spremiKorisnika(korisnik1);
 
-        // Assert
+         
         assertThat(result).isEqualTo(korisnik1);
         verify(korisnikRepository).save(korisnik1);
     }
 
     @Test
     void obrisiKorisnika_ExistingId_DeletesKorisnik() {
-        // Act
+         
         korisnikService.obrisiKorisnika(1);
 
-        // Assert
+         
         verify(korisnikRepository).deleteById(1);
     }
 } 

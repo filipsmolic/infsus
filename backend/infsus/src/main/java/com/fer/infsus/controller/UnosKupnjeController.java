@@ -79,7 +79,6 @@ public class UnosKupnjeController {
         u.setIdKupnja(dto.getIdKupnja());
         u.setKolicina(dto.getKolicina());
         u.setCijena(dto.getCijena());
-        // Korisnik i Proizvod bi se trebali dohvatiti iz baze po id-u, ovo je pojednostavljeno
         return u;
     }
 }

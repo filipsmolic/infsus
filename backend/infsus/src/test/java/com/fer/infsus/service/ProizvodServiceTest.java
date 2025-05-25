@@ -53,13 +53,13 @@ class ProizvodServiceTest {
 
     @Test
     void sviProizvodi_ReturnsList() {
-        // Arrange
+         
         when(proizvodRepository.findAll()).thenReturn(Arrays.asList(proizvod1, proizvod2));
 
-        // Act
+         
         List<Proizvod> result = proizvodService.sviProizvodi();
 
-        // Assert
+         
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(proizvod1, proizvod2);
         verify(proizvodRepository).findAll();
@@ -67,13 +67,13 @@ class ProizvodServiceTest {
 
     @Test
     void proizvodPoId_ExistingId_ReturnsProizvod() {
-        // Arrange
+         
         when(proizvodRepository.findById(1)).thenReturn(Optional.of(proizvod1));
 
-        // Act
+         
         Optional<Proizvod> result = proizvodService.proizvodPoId(1);
 
-        // Assert
+         
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(proizvod1);
         verify(proizvodRepository).findById(1);
@@ -81,36 +81,36 @@ class ProizvodServiceTest {
 
     @Test
     void proizvodPoId_NonExistingId_ReturnsEmptyOptional() {
-        // Arrange
+         
         when(proizvodRepository.findById(99)).thenReturn(Optional.empty());
 
-        // Act
+         
         Optional<Proizvod> result = proizvodService.proizvodPoId(99);
 
-        // Assert
+         
         assertThat(result).isEmpty();
         verify(proizvodRepository).findById(99);
     }
 
     @Test
     void spremiProizvod_ValidProizvod_ReturnsSavedProizvod() {
-        // Arrange
+         
         when(proizvodRepository.save(any(Proizvod.class))).thenReturn(proizvod1);
 
-        // Act
+         
         Proizvod result = proizvodService.spremiProizvod(proizvod1);
 
-        // Assert
+         
         assertThat(result).isEqualTo(proizvod1);
         verify(proizvodRepository).save(proizvod1);
     }
 
     @Test
     void obrisiProizvod_ExistingId_DeletesProizvod() {
-        // Act
+         
         proizvodService.obrisiProizvod(1);
 
-        // Assert
+         
         verify(proizvodRepository).deleteById(1);
     }
 } 

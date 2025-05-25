@@ -118,7 +118,7 @@ public class UnosNikotinaControllerTest {
         when(korisnikRepository.findById(1)).thenReturn(Optional.of(korisnik));
         when(proizvodRepository.findById(2)).thenReturn(Optional.of(proizvod));
         
-        // Set up mapper for entity-to-dto conversion
+         
         when(unosNikotinaMapper.toDTO(unosNikotina1)).thenReturn(unosNikotinaDTO1);
         when(unosNikotinaMapper.toDTO(unosNikotina2)).thenReturn(unosNikotinaDTO2);
         when(unosNikotinaMapper.toUnosiZaKorisnikaURasponuDTO(unosNikotina1)).thenReturn(unosiZaKorisnikaURasponuDTO);
@@ -126,10 +126,10 @@ public class UnosNikotinaControllerTest {
 
     @Test
     void sviUnosiNikotina_ReturnsAllUnosNikotinaDTOs() throws Exception {
-        // Arrange
+         
         when(unosNikotinaService.sviUnosiNikotina()).thenReturn(Arrays.asList(unosNikotina1, unosNikotina2));
 
-        // Act & Assert
+         
         mockMvc.perform(get("/api/unosi-nikotina"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -145,10 +145,10 @@ public class UnosNikotinaControllerTest {
 
     @Test
     void unosNikotinaPoId_ExistingId_ReturnsUnosNikotinaDTO() throws Exception {
-        // Arrange
+         
         when(unosNikotinaService.unosNikotinaPoId(10)).thenReturn(Optional.of(unosNikotina1));
 
-        // Act & Assert
+         
         mockMvc.perform(get("/api/unosi-nikotina/10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idUnosNikotina", is(10)))
@@ -161,7 +161,7 @@ public class UnosNikotinaControllerTest {
 
     @Test
     void dodajUnosNikotina_ValidDTO_ReturnsSavedDTO() throws Exception {
-        // Arrange
+         
         LocalDateTime testDatum = LocalDateTime.now();
         
         UnosNikotinaDTO inputDto = new UnosNikotinaDTO();
@@ -194,7 +194,7 @@ public class UnosNikotinaControllerTest {
         when(unosNikotinaService.spremiUnosNikotina(entityToSave)).thenReturn(savedEntity);
         when(unosNikotinaMapper.toDTO(savedEntity)).thenReturn(savedDto);
 
-        // Act & Assert
+         
         mockMvc.perform(post("/api/unosi-nikotina")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
@@ -210,7 +210,7 @@ public class UnosNikotinaControllerTest {
 
     @Test
     void azurirajUnosNikotina_ValidDTO_ReturnsUpdatedDTO() throws Exception {
-        // Arrange
+         
         LocalDateTime testDatum = LocalDateTime.now();
         
         UnosNikotinaDTO inputDto = new UnosNikotinaDTO();
@@ -243,7 +243,7 @@ public class UnosNikotinaControllerTest {
         when(unosNikotinaService.spremiUnosNikotina(any(UnosNikotina.class))).thenReturn(updatedEntity);
         when(unosNikotinaMapper.toDTO(updatedEntity)).thenReturn(updatedDto);
 
-        // Act & Assert
+         
         mockMvc.perform(put("/api/unosi-nikotina/10")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
@@ -259,10 +259,10 @@ public class UnosNikotinaControllerTest {
 
     @Test
     void obrisiUnosNikotina_ExistingId_NoContent() throws Exception {
-        // Arrange
+         
         doNothing().when(unosNikotinaService).obrisiUnosNikotina(10);
 
-        // Act & Assert
+         
         mockMvc.perform(delete("/api/unosi-nikotina/10"))
                 .andExpect(status().isOk());
 
@@ -271,7 +271,7 @@ public class UnosNikotinaControllerTest {
 
     @Test
     void unosiZaKorisnikaURasponu_ValidParams_ReturnsFilteredDTOs() throws Exception {
-        // Arrange
+         
         LocalDateTime od = LocalDateTime.of(2025, 5, 1, 0, 0, 0);
         LocalDateTime doVreme = LocalDateTime.of(2025, 5, 5, 0, 0, 0);
         
@@ -284,7 +284,7 @@ public class UnosNikotinaControllerTest {
                 any(Pageable.class)))
                 .thenReturn(page);
 
-        // Act & Assert
+         
         mockMvc.perform(get("/api/unosi-nikotina/korisnik/1")
                 .param("od", "2025-05-01T00:00:00")
                 .param("do", "2025-05-05T00:00:00")
@@ -305,7 +305,7 @@ public class UnosNikotinaControllerTest {
 
     @Test
     void batchUnosNikotina_ValidBatchDTO_ReturnsSavedDTOs() throws Exception {
-        // Arrange
+         
         BatchUnosNikotinaDTO.ProizvodUnosDTO proizvodDTO = new BatchUnosNikotinaDTO.ProizvodUnosDTO();
         proizvodDTO.setIdProizvod(2);
         proizvodDTO.setKolicina(5);
@@ -328,13 +328,13 @@ public class UnosNikotinaControllerTest {
         savedEntityDTO.setIdKorisnik(1);
         savedEntityDTO.setIdProizvod(2);
 
-        // Mock service to return our saved entity
+         
         when(unosNikotinaService.spremiUnosNikotina(any(UnosNikotina.class))).thenReturn(savedEntity);
         
-        // Mock mapper to return our DTO for the saved entity
+         
         when(unosNikotinaMapper.toDTO(savedEntity)).thenReturn(savedEntityDTO);
 
-        // Act & Assert
+         
         mockMvc.perform(post("/api/unosi-nikotina/batch")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(batchDTO)))

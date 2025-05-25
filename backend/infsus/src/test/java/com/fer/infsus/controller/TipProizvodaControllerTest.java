@@ -49,7 +49,7 @@ public class TipProizvodaControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Set up test data
+         
         tipProizvoda1 = new TipProizvoda();
         tipProizvoda1.setIdTipProizvoda(1);
         tipProizvoda1.setNaziv("Cigareta");
@@ -66,18 +66,18 @@ public class TipProizvodaControllerTest {
         tipProizvodaDTO2.setIdTipProizvoda(2);
         tipProizvodaDTO2.setNaziv("E-cigareta");
 
-        // Set up mapper behavior
+         
         when(tipProizvodaMapper.toDTO(tipProizvoda1)).thenReturn(tipProizvodaDTO1);
         when(tipProizvodaMapper.toDTO(tipProizvoda2)).thenReturn(tipProizvodaDTO2);
     }
 
     @Test
     void sviTipovi_ReturnsAllTipovi() throws Exception {
-        // Arrange
+         
         List<TipProizvoda> tipProizvoda = Arrays.asList(tipProizvoda1, tipProizvoda2);
         when(tipProizvodaService.sviTipovi()).thenReturn(tipProizvoda);
 
-        // Act & Assert
+         
         mockMvc.perform(get("/api/tipovi-proizvoda"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -93,10 +93,10 @@ public class TipProizvodaControllerTest {
 
     @Test
     void tipPoId_ExistingId_ReturnsTip() throws Exception {
-        // Arrange
+         
         when(tipProizvodaService.tipPoId(1)).thenReturn(Optional.of(tipProizvoda1));
 
-        // Act & Assert
+         
         mockMvc.perform(get("/api/tipovi-proizvoda/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idTipProizvoda", is(1)))
@@ -108,10 +108,10 @@ public class TipProizvodaControllerTest {
 
     @Test
     void tipPoId_NonExistingId_ReturnsNull() throws Exception {
-        // Arrange
+         
         when(tipProizvodaService.tipPoId(99)).thenReturn(Optional.empty());
 
-        // Act & Assert
+         
         mockMvc.perform(get("/api/tipovi-proizvoda/99"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
@@ -121,7 +121,7 @@ public class TipProizvodaControllerTest {
 
     @Test
     void dodajTip_ValidDTO_ReturnsSavedDTO() throws Exception {
-        // Arrange
+         
         TipProizvodaDTO inputDto = new TipProizvodaDTO();
         inputDto.setNaziv("Novi tip");
 
@@ -140,7 +140,7 @@ public class TipProizvodaControllerTest {
         when(tipProizvodaService.spremiTip(entityToSave)).thenReturn(savedEntity);
         when(tipProizvodaMapper.toDTO(savedEntity)).thenReturn(savedDto);
 
-        // Act & Assert
+         
         mockMvc.perform(post("/api/tipovi-proizvoda")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
@@ -155,7 +155,7 @@ public class TipProizvodaControllerTest {
 
     @Test
     void azurirajTip_ValidDTO_ReturnsUpdatedDTO() throws Exception {
-        // Arrange
+         
         TipProizvodaDTO inputDto = new TipProizvodaDTO();
         inputDto.setNaziv("Ažurirani tip");
 
@@ -174,7 +174,7 @@ public class TipProizvodaControllerTest {
         when(tipProizvodaService.spremiTip(any(TipProizvoda.class))).thenReturn(updatedEntity);
         when(tipProizvodaMapper.toDTO(updatedEntity)).thenReturn(updatedDto);
 
-        // Act & Assert
+         
         mockMvc.perform(put("/api/tipovi-proizvoda/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
@@ -189,10 +189,10 @@ public class TipProizvodaControllerTest {
 
     @Test
     void obrisiTip_ExistingId_Success() throws Exception {
-        // Arrange
+         
         doNothing().when(tipProizvodaService).obrisiTip(1);
 
-        // Act & Assert
+         
         mockMvc.perform(delete("/api/tipovi-proizvoda/1"))
                 .andExpect(status().isOk());
 
