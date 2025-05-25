@@ -34,7 +34,7 @@ describe('HomePageComponent', () => {
   it("should render today's total nicotine intake", () => {
     cy.contains('mg');
     cy.contains('danas');
-    cy.get('h2').should('contain.text', '18'); // 2*5 + 1*8 = 18
+    cy.get('h2').should('contain.text', '18');
   });
 
   it('should render the weekly nicotine chart', () => {

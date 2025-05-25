@@ -1,4 +1,3 @@
-// Cypress component test for LoginPageComponent
 import { LoginPageComponent } from '../src/app/pages/login.page';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';

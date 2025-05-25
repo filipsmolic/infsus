@@ -14,7 +14,6 @@ import { filter } from 'rxjs/operators';
   imports: [RouterOutlet, RouterModule, CommonModule],
   template: `
     <div class="min-h-screen bg-gray-900 text-white">
-      <!-- Header -->
       <header
         *ngIf="!isLoginPage"
         class="px-6 py-4 text-xl font-bold"
@@ -36,7 +35,6 @@ import { filter } from 'rxjs/operators';
             : 'p-6 grid grid-cols-1 md:grid-cols-[56px_1fr_320px] gap-6'
         "
       >
-        <!-- Sidebar Tabs -->
         <nav *ngIf="!isLoginPage" class="hidden md:flex flex-col space-y-4">
           <a
             class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-green-400 transition"
@@ -83,7 +81,6 @@ import { filter } from 'rxjs/operators';
           </a>
         </nav>
 
-        <!-- Page Content -->
         <section [class]="isLoginPage ? 'h-screen w-screen' : 'md:col-span-2'">
           <router-outlet></router-outlet>
         </section>
