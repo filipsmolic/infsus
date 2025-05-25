@@ -96,11 +96,11 @@ import { CommonModule } from '@angular/common';
 export class LoginPageComponent {
   loginForm: FormGroup;
 
-  // Regular expression for email validation
+    
   private emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  // Regular expression for password validation (at least 8 characters, one uppercase letter,
-  // one lowercase letter, one number, and one special character)
+    
+    
   private passwordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 

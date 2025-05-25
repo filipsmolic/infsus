@@ -71,12 +71,12 @@ export class HomePageComponent implements OnInit, AfterViewInit {
     const todayStr = today.toISOString();
     const sevenDaysAgoStr = sevenDaysAgo.toISOString();
 
-    // Dohvati unos nikotina za korisnika s id=1
+      
     this.unosNikotinaService
       .unosiZaKorisnikaURasponu(1, sevenDaysAgoStr, todayStr)
       .subscribe({
         next: (response) => {
-          // Obrada odgovora, koji može biti Page ili direktna lista
+            
           if (
             response &&
             typeof response === 'object' &&
@@ -100,12 +100,12 @@ export class HomePageComponent implements OnInit, AfterViewInit {
 
   calculateTodayNicotine(): void {
     const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0); // Start of today
+    todayStart.setHours(0, 0, 0, 0);   
 
     const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999); // End of today
+    todayEnd.setHours(23, 59, 59, 999);   
 
-    // Filtriraj samo današnje unose
+      
     const todayEntries = this.nicotineData.filter((entry) => {
       if (!entry.datum) return false;
 
@@ -114,7 +114,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       return entryDate >= todayStart && entryDate <= todayEnd;
     });
 
-    // Zbroji ukupnu količinu nikotina za danas
+      
     this.totalTodayNicotine = todayEntries.reduce(
       (sum, entry) => sum + (entry.kolicina ?? 0) * (entry.nikotinSadrzaj ?? 0),
       0
@@ -131,7 +131,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // Grupiraj podatke po danima
+      
     const last7Days = this.getLast7Days();
     const nicotineByDay = this.groupNicotineDataByDay(this.nicotineData);
     const chartData = last7Days.map((day) => {
@@ -139,7 +139,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       return nicotineByDay[dayStr] || 0;
     });
 
-    // Nazivi dana u tjednu
+      
     const labels = last7Days.map((date) => {
       const dayNames = ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'];
       return dayNames[date.getDay()];
@@ -206,7 +206,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
         },
       });
     } catch (error) {
-      // Fail silently
+        
     }
   }
 
