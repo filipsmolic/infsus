@@ -1,13 +1,193 @@
 package com.fer.infsus.controller;
 
-import com.fer.infsus.dto.SavjetDTO;
-import com.fer.infsus.model.Savjet;
-import com.fer.infsus.service.SavjetService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import lomboksRequiredArgsConstructord.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fer.infsus.dto.SavjetDTO;
+import com.fer.infsus.model.Savjet;
+import com.fer.infsus.service.SavjetService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/savjeti")
@@ -62,7 +242,6 @@ public class SavjetController {
         s.setIdSavjet(dto.getIdSavjet());
         s.setIzvor(dto.getIzvor());
         s.setTekst(dto.getTekst());
-        // Korisnik bi se trebao dohvatiti iz baze po id-u, ovo je pojednostavljeno
         return s;
     }
 }

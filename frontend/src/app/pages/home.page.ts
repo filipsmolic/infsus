@@ -5,7 +5,7 @@ import Chart from 'chart.js/auto';
 import { UnosNikotinaControllerService } from '../api/api/unosNikotinaController.service';
 import { UnosNikotinaDTO } from '../api/model/unosNikotinaDTO';
 
-// Prošireni tipovi koji uključuju datum
+  
 interface UnosNikotinaExtended extends UnosNikotinaDTO {
   datum?: string;
   nikotinSadrzaj?: number;
@@ -52,23 +52,23 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   }
   
   ngAfterViewInit(): void {
-    // Grafovi će se inicijalizirati nakon dohvata podataka
+      
   }
   
   fetchData(): void {
-    const today = new Date(); // Get current date and time
-    today.setHours(23, 59, 59, 999); // Set time to end of the day
+    const today = new Date();   
+    today.setHours(23, 59, 59, 999);   
 
     const sevenDaysAgo = new Date(today);
-    sevenDaysAgo.setDate(today.getDate() - 6); // Go back 6 days to get a 7-day range including today
-    sevenDaysAgo.setHours(0, 0, 0, 0); // Set time to start of that day
+    sevenDaysAgo.setDate(today.getDate() - 6);   
+    sevenDaysAgo.setHours(0, 0, 0, 0);   
     
     const todayStr = today.toISOString();
     const sevenDaysAgoStr = sevenDaysAgo.toISOString();
     
     console.log("Date range for nicotine data:", sevenDaysAgoStr, "to", todayStr);
     
-    // Dohvati unos nikotina za korisnika s id=1
+      
     this.unosNikotinaService.unosiZaKorisnikaURasponu(
       1,
       sevenDaysAgoStr,
@@ -77,7 +77,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       next: (response) => {
         console.log("Nicotine data received:", response);
         
-        // Obrada odgovora, koji može biti Page ili direktna lista
+          
         if (response && typeof response === 'object' && 'content' in response) {
           this.nicotineData = response.content as UnosNikotinaExtended[];
         } else {
@@ -98,21 +98,21 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   
   calculateTodayNicotine(): void {
     const todayStart = new Date(); 
-    todayStart.setHours(0, 0, 0, 0); // Start of today
+    todayStart.setHours(0, 0, 0, 0);   
 
     const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999); // End of today
+    todayEnd.setHours(23, 59, 59, 999);   
     
-    // Filtriraj samo današnje unose
+      
     const todayEntries = this.nicotineData.filter(entry => {
       if (!entry.datum) return false;
       
       const entryDate = new Date(entry.datum);
-      // No need to normalize entryDate to start of day if comparing against a range
+        
       return entryDate >= todayStart && entryDate <= todayEnd;
     });
     
-    // Zbroji ukupnu količinu nikotina za danas
+      
     this.totalTodayNicotine = todayEntries.reduce((sum, entry) => sum + ((entry.kolicina ?? 0) * (entry.nikotinSadrzaj ?? 0)), 0);
   }
   
@@ -130,7 +130,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       return;
     }
     
-    // Grupiraj podatke po danima
+      
     const last7Days = this.getLast7Days();
     console.log('Last 7 days:', last7Days);
     
@@ -143,7 +143,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
     });
     console.log('Chart data points:', chartData);
     
-    // Nazivi dana u tjednu
+      
     const labels = last7Days.map(date => {
       const dayNames = ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'];
       return dayNames[date.getDay()];
@@ -227,12 +227,12 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   
   getLast7Days(): Date[] {
     const result: Date[] = [];
-    const today = new Date(); // Use current date
+    const today = new Date();   
     
     for (let i = 6; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
-      date.setHours(0, 0, 0, 0); // Keep normalizing to start of day for labels
+      date.setHours(0, 0, 0, 0);   
       result.push(date);
     }
     console.log("Last 7 days dates for chart labels:", result.map(d => d.toISOString().split('T')[0]));
@@ -256,7 +256,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
           result[dayStr] = 0;
         }
         
-        // Izračunaj ukupnu količinu nikotina (kolicina * nikotinSadrzaj)
+          
         const totalNicotine = (item.kolicina ?? 0) * (item.nikotinSadrzaj ?? 0);
         result[dayStr] += totalNicotine;
       }

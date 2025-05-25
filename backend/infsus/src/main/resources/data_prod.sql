@@ -1,4 +1,4 @@
--- Postignuća
+ 
 INSERT INTO postignuce (naziv, opis) VALUES
                                          ('Brončana odlučnost', '3 dana bez unosa nikotina'),
                                          ('Srebrna odlučnost', '10 dana bez unosa nikotina'),
@@ -11,25 +11,25 @@ INSERT INTO postignuce (naziv, opis) VALUES
                                          ('Super napredak', '75% manji unos'),
                                          ('Heroj bez nikotina', '365 dana bez nikotina');
 
--- Vremenska postignuća
--- Ovdje id_postignuce mora ostati jer je strani ključ
+ 
+ 
 INSERT INTO vremensko_postignuce (broj_dana_uvjet, id_postignuce) VALUES
                                                                       (3, 1), (10, 2), (30, 3), (60, 7), (100, 8), (365, 10);
 
--- Postotna postignuća
--- Ovdje id_postignuce mora ostati jer je strani ključ
+ 
+ 
 INSERT INTO postotno_postignuce (postotak_uvjet, id_postignuce) VALUES
                                                                     (25, 4), (50, 5), (75, 9), (100, 6);
 
--- Tipovi proizvoda
+ 
 INSERT INTO tip_proizvoda (naziv) VALUES
                                       ('Cigareta'), ('Nikotinska vrećica'), ('Kubanka'), ('Iqos'), ('Nikotinski flaster'), ('Nikotinska žvakaća'), ('Ostalo');
 
--- Proizvodi
+ 
 INSERT INTO proizvod (opis, nikotin_sadrzaj, id_tip_proizvoda) VALUES
                                                                    ('Marlboro Gold', 1.6, 1), ('Marlboro Red', 2.0, 1), ('Cuba 17mg', 17.0, 2), ('Cuba 43mg', 43.0, 2), ('Kubanka 150mg', 150.0, 3), ('Kubanka 200mg', 200.0, 3), ('Iqos Blue', 1.2, 4), ('Flaster 21mg', 21.0, 5), ('Žvakaća 4mg', 4.0, 6), ('Ostalo', 0.5, 7);
 
--- Korisnici
+ 
 INSERT INTO korisnik (uloga, ime, email, lozinka, datum_reg, id_proizvod) VALUES
                                                                               (1, 'Ivan Horvat', 'ivan.horvat@example.com', 'hashlozinke1', '2025-03-01', 1),
                                                                               (0, 'Ana Kovač', 'ana.kovac@example.com', 'hashlozinke2', '2025-03-02', 2),
@@ -42,7 +42,7 @@ INSERT INTO korisnik (uloga, ime, email, lozinka, datum_reg, id_proizvod) VALUES
                                                                               (0, 'Dino Kovačević', 'dino.kovacevic@example.com', 'hashlozinke9', '2025-03-09', 9),
                                                                               (0, 'Sara Tomić', 'sara.tomic@example.com', 'hashlozinke10', '2025-03-10', 10);
 
--- Savjeti
+ 
 INSERT INTO savjet (izvor, tekst, datum, id_korisnik) VALUES
                                                           ('CHATGPT', 'Identificirajte okidače koji vas potiču na unos nikotinskih proizvoda', '2025-03-15', 2),
                                                           ('CHATGPT', 'Suočite se žudnjom za unosom i imajte na umu da će proći', '2025-03-20', 3),
@@ -55,11 +55,11 @@ INSERT INTO savjet (izvor, tekst, datum, id_korisnik) VALUES
                                                           ('CHATGPT', 'Koristite aplikacije za praćenje napretka', '2025-03-22', 10),
                                                           ('CHATGPT', 'Podsjetite se na razloge za prestanak', '2025-03-24', 1);
 
--- Ostvarena postignuća
+ 
 INSERT INTO ostvario (id_korisnik, id_postignuce) VALUES
                                                       (1, 1), (2, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10);
 
--- Unos nikotina
+ 
 INSERT INTO unos_nikotina (kolicina, datum, id_korisnik, id_proizvod) VALUES
                                                                           (2, '2025-05-21', 1, 1), (1, '2025-05-19', 1, 2), (3, '2025-05-20', 1, 3), (2, '2025-03-10', 1, 4), (1, '2025-03-13', 1, 5), (2, '2025-03-16', 1, 6), (1, '2025-03-19', 1, 7), (2, '2025-03-22', 1, 8), (1, '2025-03-25', 1, 9), (2, '2025-03-28', 1, 10),
                                                                           (2, '2025-03-02', 2, 2), (1, '2025-03-05', 2, 3), (3, '2025-03-08', 2, 4), (2, '2025-03-11', 2, 5), (1, '2025-03-14', 2, 6), (2, '2025-03-17', 2, 7), (1, '2025-03-20', 2, 8), (2, '2025-03-23', 2, 9), (1, '2025-03-26', 2, 10), (2, '2025-03-29', 2, 1),
@@ -72,7 +72,7 @@ INSERT INTO unos_nikotina (kolicina, datum, id_korisnik, id_proizvod) VALUES
                                                                           (2, '2025-03-03', 9, 9), (1, '2025-03-06', 9, 10), (3, '2025-03-09', 9, 1), (2, '2025-03-12', 9, 2), (1, '2025-03-15', 9, 3), (2, '2025-03-18', 9, 4), (1, '2025-03-21', 9, 5), (2, '2025-03-24', 9, 6), (1, '2025-03-27', 9, 7), (2, '2025-03-30', 9, 8),
                                                                           (2, '2025-03-01', 10, 10), (1, '2025-03-04', 10, 1), (3, '2025-03-07', 10, 2), (2, '2025-03-10', 10, 3), (1, '2025-03-13', 10, 4), (2, '2025-03-16', 10, 5), (1, '2025-03-19', 10, 6), (2, '2025-03-22', 10, 7), (1, '2025-03-25', 10, 8), (2, '2025-03-28', 10, 9);
 
--- Unos kupnje
+ 
 INSERT INTO unos_kupnje (datum, kolicina, cijena, id_korisnik, id_proizvod) VALUES
                                                                                 ('2025-05-22', 1, 150.00, 1, 2), ('2025-05-19', 2, 200.00, 1, 3), ('2025-05-20', 1, 100.00, 1, 4), ('2025-03-10', 2, 120.00, 1, 5), ('2025-03-13', 1, 80.00, 1, 6), ('2025-03-16', 2, 90.00, 1, 7), ('2025-03-19', 1, 110.00, 1, 8), ('2025-03-22', 2, 130.00, 1, 9), ('2025-03-25', 1, 140.00, 1, 10), ('2025-03-28', 2, 160.00, 1, 1),
                                                                                 ('2025-03-02', 1, 150.00, 2, 3), ('2025-03-05', 2, 200.00, 2, 4), ('2025-03-08', 1, 100.00, 2, 5), ('2025-03-11', 2, 120.00, 2, 6), ('2025-03-14', 1, 80.00, 2, 7), ('2025-03-17', 2, 90.00, 2, 8), ('2025-03-20', 1, 110.00, 2, 9), ('2025-03-23', 2, 130.00, 2, 10), ('2025-03-26', 1, 140.00, 2, 1), ('2025-03-29', 2, 160.00, 2, 2),

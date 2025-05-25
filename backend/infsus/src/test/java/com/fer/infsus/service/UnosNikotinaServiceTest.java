@@ -64,13 +64,13 @@ class UnosNikotinaServiceTest {
 
     @Test
     void sviUnosiNikotina_ReturnsList() {
-        // Arrange
+         
         when(unosNikotinaRepository.findAll()).thenReturn(Arrays.asList(unosNikotina1, unosNikotina2));
 
-        // Act
+         
         List<UnosNikotina> result = unosNikotinaService.sviUnosiNikotina();
 
-        // Assert
+         
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(unosNikotina1, unosNikotina2);
         verify(unosNikotinaRepository).findAll();
@@ -78,13 +78,13 @@ class UnosNikotinaServiceTest {
 
     @Test
     void unosNikotinaPoId_ExistingId_ReturnsUnosNikotina() {
-        // Arrange
+         
         when(unosNikotinaRepository.findById(1)).thenReturn(Optional.of(unosNikotina1));
 
-        // Act
+         
         Optional<UnosNikotina> result = unosNikotinaService.unosNikotinaPoId(1);
 
-        // Assert
+         
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(unosNikotina1);
         verify(unosNikotinaRepository).findById(1);
@@ -92,51 +92,51 @@ class UnosNikotinaServiceTest {
 
     @Test
     void unosNikotinaPoId_NonExistingId_ReturnsEmptyOptional() {
-        // Arrange
+         
         when(unosNikotinaRepository.findById(99)).thenReturn(Optional.empty());
 
-        // Act
+         
         Optional<UnosNikotina> result = unosNikotinaService.unosNikotinaPoId(99);
 
-        // Assert
+         
         assertThat(result).isEmpty();
         verify(unosNikotinaRepository).findById(99);
     }
 
     @Test
     void spremiUnosNikotina_ValidUnosNikotina_ReturnsSavedUnosNikotina() {
-        // Arrange
+         
         when(unosNikotinaRepository.save(any(UnosNikotina.class))).thenReturn(unosNikotina1);
 
-        // Act
+         
         UnosNikotina result = unosNikotinaService.spremiUnosNikotina(unosNikotina1);
 
-        // Assert
+         
         assertThat(result).isEqualTo(unosNikotina1);
         verify(unosNikotinaRepository).save(unosNikotina1);
     }
 
     @Test
     void obrisiUnosNikotina_ExistingId_DeletesUnosNikotina() {
-        // Act
+         
         unosNikotinaService.obrisiUnosNikotina(1);
 
-        // Assert
+         
         verify(unosNikotinaRepository).deleteById(1);
     }
 
     @Test
     void unosiZaKorisnikaURasponu_ValidParams_ReturnsFilteredList() {
-        // Arrange
+         
         LocalDateTime from = LocalDateTime.now().minusDays(2);
         LocalDateTime to = LocalDateTime.now().plusDays(1);
         when(unosNikotinaRepository.findByKorisnikIdKorisnikAndDatumBetween(1, from, to))
                 .thenReturn(Arrays.asList(unosNikotina1, unosNikotina2));
 
-        // Act
+         
         List<UnosNikotina> result = unosNikotinaService.unosiZaKorisnikaURasponu(1, from, to);
 
-        // Assert
+         
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(unosNikotina1, unosNikotina2);
         verify(unosNikotinaRepository).findByKorisnikIdKorisnikAndDatumBetween(1, from, to);

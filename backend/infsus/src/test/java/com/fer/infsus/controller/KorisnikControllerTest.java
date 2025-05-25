@@ -48,7 +48,6 @@ public class KorisnikControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Set up test data
         proizvod = new Proizvod();
         proizvod.setIdProizvod(1);
         proizvod.setOpis("Test Proizvod");
@@ -87,11 +86,11 @@ public class KorisnikControllerTest {
 
     @Test
     void sviKorisnici_ReturnsAllKorisnici() throws Exception {
-        // Arrange
+        
         List<Korisnik> korisnici = Arrays.asList(korisnik1, korisnik2);
         when(korisnikService.sviKorisnici()).thenReturn(korisnici);
 
-        // Act & Assert
+       
         mockMvc.perform(get("/api/korisnici"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -106,10 +105,10 @@ public class KorisnikControllerTest {
 
     @Test
     void korisnikPoId_ExistingId_ReturnsKorisnik() throws Exception {
-        // Arrange
+        
         when(korisnikService.korisnikPoId(1)).thenReturn(Optional.of(korisnik1));
 
-        // Act & Assert
+      
         mockMvc.perform(get("/api/korisnici/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idKorisnik", is(1)))
@@ -121,10 +120,10 @@ public class KorisnikControllerTest {
 
     @Test
     void korisnikPoId_NonExistingId_ReturnsNull() throws Exception {
-        // Arrange
+      
         when(korisnikService.korisnikPoId(99)).thenReturn(Optional.empty());
 
-        // Act & Assert
+        
         mockMvc.perform(get("/api/korisnici/99"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
@@ -134,7 +133,7 @@ public class KorisnikControllerTest {
 
     @Test
     void dodajKorisnika_ValidDTO_ReturnsSavedDTO() throws Exception {
-        // Arrange
+      
         KorisnikDTO inputDto = new KorisnikDTO();
         inputDto.setIme("Marko Marković");
         inputDto.setEmail("marko@example.com");
@@ -148,7 +147,7 @@ public class KorisnikControllerTest {
 
         when(korisnikService.spremiKorisnika(any(Korisnik.class))).thenReturn(savedEntity);
 
-        // Act & Assert
+       
         mockMvc.perform(post("/api/korisnici")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
@@ -162,7 +161,7 @@ public class KorisnikControllerTest {
 
     @Test
     void azurirajKorisnika_ValidDTO_ReturnsUpdatedDTO() throws Exception {
-        // Arrange
+       
         KorisnikDTO inputDto = new KorisnikDTO();
         inputDto.setIme("Ana Anić Updated");
         inputDto.setEmail("ana.updated@example.com");
@@ -176,7 +175,7 @@ public class KorisnikControllerTest {
 
         when(korisnikService.spremiKorisnika(any(Korisnik.class))).thenReturn(updatedEntity);
 
-        // Act & Assert
+   
         mockMvc.perform(put("/api/korisnici/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
@@ -190,10 +189,10 @@ public class KorisnikControllerTest {
 
     @Test
     void obrisiKorisnika_ExistingId_Success() throws Exception {
-        // Arrange
+      
         doNothing().when(korisnikService).obrisiKorisnika(1);
 
-        // Act & Assert
+       
         mockMvc.perform(delete("/api/korisnici/1"))
                 .andExpect(status().isOk());
 
