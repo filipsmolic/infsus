@@ -71,7 +71,7 @@ import { BehaviorSubject } from 'rxjs';
         <div class="space-y-4">
           <div
             *ngFor="let entry of products; let i = index"
-            class="flex md:flex-row md:space-x-4 space-y-2 md:space-y-0 items-start"
+            class="flex md:flex-row md:space-x-4 space-y-2 md:space-y-0 items-end"
           >
             <div class="flex-1">
               <label
